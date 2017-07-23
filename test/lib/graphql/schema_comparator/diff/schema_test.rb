@@ -101,7 +101,7 @@ describe GraphQL::SchemaComparator::Diff::Schema do
   describe "#changes" do
     it "kitchensink: returns a list of changes between schemas" do
       assert_equal [
-        "`DType` was added",
+        "Type `DType` was added",
         "Field `Query.a` description changed from `Just a simple string` to `This description has been changed`",
         "Argument `anArg: String` was removed from field `Query.a`",
         "Field `Query.b` changed type from `BType` to `Int!`",

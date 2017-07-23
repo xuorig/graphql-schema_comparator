@@ -4,14 +4,18 @@ require "bundler/setup"
 require "thor"
 require "graphql/schema_comparator"
 
-class GraphQLSchemaUtils < Thor
+class GraphQLSchema < Thor
   desc "compare OLD_SCHEMA NEW_SCHEMA", "Compares OLD_SCHEMA with NEW_SCHEMA and returns a list of changes"
 
   def compare(old_schema, new_schema)
     parsed_old = parse_schema(old_schema)
     parsed_new = parse_schema(new_schema)
 
+    say "🤖  Checking for changes..."
     result = GraphQL::SchemaComparator.compare(parsed_old, parsed_new)
+
+    say "🎉  Done! Result:"
+    say "\n"
 
     if result.identical?
       say "✅  Schemas are identical"
@@ -23,18 +27,14 @@ class GraphQLSchemaUtils < Thor
   private
 
   def print_changes(result)
-    say "[GraphQL][SchemaComparator] Detected the following changes between schemas:"
-    say "\n"
-
-    say "💔  = Breaking Change"
-    say "💚  = Non-Breaking Change"
+    say "Detected the following changes between schemas:"
     say "\n"
 
     result.changes.each do |change|
       if change.breaking
-        say "💔  #{change.message}", :red
+        say "⚠️  #{change.message}", :yellow
       else
-        say "💚  #{change.message}", :green
+        say "✅  #{change.message}", :green
       end
     end
   end
@@ -50,4 +50,4 @@ class GraphQLSchemaUtils < Thor
   end
 end
 
-GraphQLSchemaUtils.start(ARGV)
+GraphQLSchema.start(ARGV)

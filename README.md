@@ -30,13 +30,23 @@ the commandline.
 
 After a `gem install graphql-schema_comparator`, use the CLI this way:
 
+```
+Commands:
+  graphql-schema compare OLD_SCHEMA NEW_SCHEMA  # Compares OLD_SCHEMA with NEW_SCHEMA and returns a list of changes
+  graphql-schema help [COMMAND]                 # Describe available commands or one specific command
+```
+
+Where OLD_SCHEMA and NEW_SCHEMA can be a string containing a schema IDL or a filename where that IDL is located.
+
+### Example
+
 ```bash
-graphql-schema-utils compare "schema { query: Query } type Query { a: String }" "schema { query: Query } type Query { b: Int }"
+graphql-schema compare "schema { query: Query } type Query { a: String }" "schema { query: A } type A { a: String }"
 ```
 
 And you should get the following result:
 
-![comparator result](http://i.imgur.com/clGVn4E.png)
+![comparator result](http://i.imgur.com/XLFeo8e.png)
 
 ## Usage
 

@@ -161,7 +161,7 @@ module GraphQL
         end
 
         def message
-          "`#{type.name}` was added"
+          "Type `#{type.name}` was added"
         end
       end
 
