@@ -40,13 +40,7 @@ Where OLD_SCHEMA and NEW_SCHEMA can be a string containing a schema IDL or a fil
 
 ### Example
 
-```bash
-graphql-schema compare "schema { query: Query } type Query { a: String }" "schema { query: A } type A { a: String }"
-```
-
-And you should get the following result:
-
-![comparator result](http://i.imgur.com/XLFeo8e.png)
+![comparator result](http://i.imgur.com/FnItukM.png)
 
 ## Usage
 

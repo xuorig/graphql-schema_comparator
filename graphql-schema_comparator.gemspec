@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Marc-Andre Giroux"]
   spec.email         = ["mgiroux0@gmail.com"]
 
-  spec.summary       = %q{Compare GraphQL schemas and get the changes involved.}
-  spec.description   = %q{GraphQL::SchemaComparator compares two GraphQL schemas givent their IDL and returns a list of changes.}
+  spec.summary       = %q{Compare GraphQL schemas and get the changes that happened.}
+  spec.description   = %q{GraphQL::SchemaComparator compares two GraphQL schemas given their IDL and returns a list of changes.}
   spec.homepage      = "http://mgiroux.me"
   spec.license       = "MIT"
 
@@ -26,8 +26,8 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.bindir        = "bin"
+  spec.executables   = ["graphql-schema"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "graphql", "~> 1.6"
