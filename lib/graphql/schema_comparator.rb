@@ -16,8 +16,13 @@ module GraphQL
     private
 
     def self.parse_schema(schema)
-      # TODO
-      schema
+      if schema.is_a?(GraphQL::Schema)
+        schema
+      elsif schema.is_a?(String)
+        GraphQL::Schema.from_definition(schema)
+      else
+        raise ArgumentError, "Invalid Schema #{schema}. Expected a valid IDL or GraphQL::Schema object."
+      end
     end
   end
 end

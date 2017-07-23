@@ -1,6 +1,8 @@
 module GraphQL
   module SchemaComparator
     class Result
+      attr_reader :changes
+
       def initialize(changes)
         @changes = changes
       end

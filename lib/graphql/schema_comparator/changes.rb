@@ -523,7 +523,7 @@ module GraphQL
           @input_type = input_type
           @old_input_field = old_input_field
           @new_input_field = new_input_field
-          @breaking = false
+          @breaking = true
         end
 
         def message
@@ -539,7 +539,7 @@ module GraphQL
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
-          @breaking = false
+          @breaking = true
         end
 
         def message
@@ -560,7 +560,7 @@ module GraphQL
           @type = type
           @old_field = old_field
           @new_field = new_field
-          @breaking = false
+          @breaking = true
         end
 
         def message
