@@ -2,7 +2,10 @@ require "graphql/schema_comparator/diff/enum"
 require "graphql/schema_comparator/diff/union"
 require "graphql/schema_comparator/diff/input_object"
 require "graphql/schema_comparator/diff/input_field"
-
+require "graphql/schema_comparator/diff/object_type"
+require "graphql/schema_comparator/diff/interface"
+require "graphql/schema_comparator/diff/field"
+require "graphql/schema_comparator/diff/argument"
 
 module GraphQL
   module SchemaComparator
@@ -44,17 +47,16 @@ module GraphQL
             changes << Changes::TypeKindChanged.new(old_type, new_type)
           else
             case old_type
-            when EnumType
-              changes += Enum.new(old_type, new_type).diff
-            when UnionType
-              changes += Union.new(old_type, new_type).diff
-            when InputObjectType
-              changes += InputObject.new(old_type, new_type).diff
-            # when ObjectType
-            #   changes += object_type_changes(old_type, new_type)
-            # when InterfaceType
-            #   changes += interface_type_changes(old_type, new_type)
-            # end
+            when GraphQL::EnumType
+              changes += Diff::Enum.new(old_type, new_type).diff
+            when GraphQL::UnionType
+              changes += Diff::Union.new(old_type, new_type).diff
+            when GraphQL::InputObjectType
+              changes += Diff::InputObject.new(old_type, new_type).diff
+            when GraphQL::ObjectType
+              changes += Diff::ObjectType.new(old_type, new_type).diff
+            when GraphQL::InterfaceType
+              changes += Diff::Interface.new(old_type, new_type).diff
             end
           end
 

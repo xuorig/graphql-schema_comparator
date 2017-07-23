@@ -79,7 +79,7 @@ module GraphQL
         end
       end
 
-      class ObjectTypeArgumentRemoved
+      class FieldArgumentRemoved
         attr_reader :object_type, :field, :argument
 
         def initialize(object_type, field, argument)
@@ -89,7 +89,7 @@ module GraphQL
         end
 
         def message
-          "Argument `#{argument.name}` was removed from field `#{object_type.name}.#{field.name}`"
+          "Argument `#{argument.name}: #{argument.type}` was removed from field `#{object_type.name}.#{field.name}`"
         end
       end
 
@@ -102,17 +102,15 @@ module GraphQL
       # end
 
       class FieldRemoved
-        class InputFieldRemoved
-          attr_reader :object_type, :field
+        attr_reader :object_type, :field
 
-          def initialize(object_type, field)
-            @object_type = input_object_type
-            @field = field
-          end
+        def initialize(object_type, field)
+          @object_type = object_type
+          @field = field
+        end
 
-          def message
-            "Field `#{field.name}` was removed from object type #{object_type.name}"
-          end
+        def message
+          "Field `#{field.name}` was removed from object type `#{object_type.name}`"
         end
       end
 
@@ -222,12 +220,33 @@ module GraphQL
       end
 
       class FieldDescriptionChanged
-        def initialize(*)
+        attr_reader :type, :old_field, :new_field
+
+        def initialize(type, old_field, new_field)
+          @type = type
+          @old_field = old_field
+          @new_field = new_field
+        end
+
+        def message
+          "Field `#{type.name}.#{old_field.name}` description changed"\
+            " from `#{old_field.description}` to `#{new_field.description}`"
         end
       end
 
-      class ObjectTypeArgumentDescriptionChanged
-        def initialize(*)
+      class FieldArgumentDescriptionChanged
+        attr_reader :type, :field, :old_argument, :new_argument
+
+        def initialize(type, field, old_argument, new_argument)
+          @type = type
+          @field = field
+          @old_argument = old_argument
+          @new_argument = new_argument
+        end
+
+        def message
+          "Description for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
+            " from `#{old_argument.description}` to `#{new_argument.description}`"
         end
       end
 
@@ -237,7 +256,17 @@ module GraphQL
       end
 
       class FieldDeprecationChanged
-        def initialize(*)
+        attr_reader :type, :old_field, :new_field
+
+        def initialize(type, old_field, new_field)
+          @type = type
+          @old_field = old_field
+          @new_field = new_field
+        end
+
+        def message
+          "Deprecation reason on field `#{type.name}.#{new_field.name}` has changed "\
+            "from `#{old_field.deprecation_reason}` to `#{new_field.deprecation_reason}`"
         end
       end
 
@@ -256,8 +285,19 @@ module GraphQL
         end
       end
 
-      class ObjectTypeArgumentDefaultChanged
-        def initialize(*)
+      class FieldArgumentDefaultChanged
+        attr_reader :type, :field, :old_argument, :new_argument
+
+        def initialize(type, field, old_argument, new_argument)
+          @type = type
+          @field = field
+          @old_argument = old_argument
+          @new_argument = new_argument
+        end
+
+        def message
+          "Default value for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
+            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
         end
       end
 
@@ -267,12 +307,28 @@ module GraphQL
       end
 
       class ObjectTypeInterfaceAdded
-        def initialize(*)
+        attr_reader :interface, :object_type
+
+        def initialize(interface, object_type)
+          @interface = interface
+          @object_type = object_type
+        end
+
+        def message
+          "`#{object_type.name}` object implements `#{interface.name}` interface"
         end
       end
 
       class FieldAdded
-        def initialize(*)
+        attr_reader :object_type, :field
+
+        def initialize(object_type, field)
+          @object_type = object_type
+          @field = field
+        end
+
+        def message
+          "Field `#{field.name}` was added to object type `#{object_type.name}`"
         end
       end
 
@@ -416,8 +472,17 @@ module GraphQL
         end
       end
 
-      class ObjectTypeArgumentAdded
-        def initialize(*)
+      class FieldArgumentAdded
+        attr_reader :type, :field, :argument
+
+        def initialize(type, field, argument)
+          @type = type
+          @field = field
+          @argument = argument
+        end
+
+        def message
+          "Argument `#{argument.name}: #{argument.type}` added to field `#{type.name}.#{field.name}`"
         end
       end
 
@@ -440,8 +505,19 @@ module GraphQL
         end
       end
 
-      class ObjectTypeArgumentTypeChanged
-        def initialize(*)
+      class FieldArgumentTypeChanged
+        attr_reader :type, :field, :old_argument, :new_argument
+
+        def initialize(type, field, old_argument, new_argument)
+          @type = type
+          @field = field
+          @old_argument = old_argument
+          @new_argument = new_argument
+        end
+
+        def message
+          "Type for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
+            " from `#{old_argument.type}` to `#{new_argument.type}`"
         end
       end
 
@@ -451,7 +527,16 @@ module GraphQL
       end
 
       class FieldTypeChanged
-        def initialize(*)
+        attr_reader :type, :old_field, :new_field
+
+        def initialize(type, old_field, new_field)
+          @type = type
+          @old_field = old_field
+          @new_field = new_field
+        end
+
+        def message
+          "Field `#{type}.#{old_field.name}` changed type from `#{old_field.type}` to `#{new_field.type}`"
         end
       end
 
