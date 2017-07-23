@@ -68,8 +68,21 @@ module GraphQL
         end
 
         def changes_in_schema
-          # TODO
-          []
+          changes = []
+
+          if old_schema.query != new_schema.query
+            changes << Changes::SchemaQueryTypeChanged.new(old_schema, new_schema)
+          end
+
+          if old_schema.mutation != new_schema.mutation
+            changes << Changes::SchemaMutationTypeChanged.new(old_schema, new_schema)
+          end
+
+          if old_schema.subscription != new_schema.subscription
+            changes << Changes::SchemaSubscriptionTypeChanged.new(old_schema, new_schema)
+          end
+
+          changes
         end
 
         def changes_in_directives

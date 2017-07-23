@@ -42,7 +42,7 @@ And you should get the following result:
 
 `GraphQL::SchemaComparator`, provides a simple api for Ruby applications to use.
 
-### `GraphQL::SchemaComparator.compare`
+### GraphQL::SchemaComparator.compare
 
 The compare method takes two arguments, `old_schema` and `new_schema`, the two schemas to compare.
 

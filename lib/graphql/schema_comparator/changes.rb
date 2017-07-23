@@ -104,9 +104,19 @@ module GraphQL
       # class DirectiveArgumentRemoved
       # end
 
-      # TODO
-      # class SchemaQueryTypeChanged
-      # end
+      class SchemaQueryTypeChanged
+        attr_reader :old_schema, :new_schema, :breaking
+
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @breaking = true
+        end
+
+        def message
+          "Schema query root has changed from `#{old_schema.query.name}` to `#{new_schema.query.name}`"
+        end
+      end
 
       class FieldRemoved
         attr_reader :object_type, :field, :breaking
@@ -569,12 +579,28 @@ module GraphQL
       end
 
       class SchemaMutationTypeChanged
-        def initialize(*)
+        attr_reader :old_schema, :new_schema, :breaking
+
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @breaking = false
+        end
+
+        def message
+          "Schema mutation root has changed from `#{old_schema.mutation}` to `#{new_schema.mutation}`"
         end
       end
 
       class SchemaSubscriptionTypeChanged
-        def initialize(*)
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @breaking = false
+        end
+
+        def message
+          "Schema subscription type has changed from `#{old_schema.subscription}` to `#{new_schema.subscription}`"
         end
       end
     end
