@@ -32,9 +32,9 @@ class GraphQLSchemaUtils < Thor
 
     result.changes.each do |change|
       if change.breaking
-        say "💔 #{change.message}", :red
+        say "💔  #{change.message}", :red
       else
-        say "💚 #{change.message}", :green
+        say "💚  #{change.message}", :green
       end
     end
   end
