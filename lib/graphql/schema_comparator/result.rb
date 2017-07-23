@@ -10,7 +10,7 @@ module GraphQL
       end
 
       def breaking_changes
-        @changes.filter { |c| c.breaking }
+        @changes.select { |c| c.breaking }
       end
 
       def breaking?

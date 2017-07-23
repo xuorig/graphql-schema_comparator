@@ -8,6 +8,7 @@ Rake::TestTask.new do |t|
   t.libs << 'test'
   t.test_files = FileList[
     'test/lib/graphql/schema_comparator/*/*_test.rb',
+    'test/lib/graphql/schema_comparator/*_test.rb',
     'test/lib/graphql/*_test.rb'
   ]
   t.verbose = true

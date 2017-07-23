@@ -1,6 +1,7 @@
 require "graphql/schema_comparator/version"
 require "graphql/schema_comparator/diff/schema"
 require "graphql/schema_comparator/changes"
+require "graphql/schema_comparator/result"
 
 module GraphQL
   module SchemaComparator

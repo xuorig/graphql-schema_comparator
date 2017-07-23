@@ -4,10 +4,11 @@ module GraphQL
       # Breaking Changes
 
       class TypeRemoved
-        attr_reader :removed_type
+        attr_reader :removed_type, :breaking
 
         def initialize(removed_type)
           @removed_type = removed_type
+          @breaking = true
         end
 
         def message
@@ -16,10 +17,11 @@ module GraphQL
       end
 
       class DirectiveRemoved
-        attr_reader :removed_directive
+        attr_reader :removed_directive, :breaking
 
         def initialize(removed_directive)
           @removed_directive = removed_directive
+          @breaking = true
         end
 
         def message
@@ -28,11 +30,12 @@ module GraphQL
       end
 
       class TypeKindChanged
-        attr_reader :old_type, :new_type
+        attr_reader :old_type, :new_type, :breaking
 
         def initialize(old_type, new_type)
           @old_type = old_type
           @new_type = new_type
+          @breaking = true
         end
 
         def message
@@ -41,11 +44,12 @@ module GraphQL
       end
 
       class EnumValueRemoved
-        attr_reader :enum_value, :enum_type
+        attr_reader :enum_value, :enum_type, :breaking
 
         def initialize(enum_value, enum_type)
           @enum_value = enum_value
           @enum_type = enum_type
+          @breaking = true
         end
 
         def message
@@ -54,11 +58,12 @@ module GraphQL
       end
 
       class UnionMemberRemoved
-        attr_reader :union_type, :union_member
+        attr_reader :union_type, :union_member, :breaking
 
         def initialize(union_type, union_member)
           @union_member = union_member
           @union_type = union_type
+          @breaking = true
         end
 
         def message
@@ -67,11 +72,12 @@ module GraphQL
       end
 
       class InputFieldRemoved
-        attr_reader :input_object_type, :field
+        attr_reader :input_object_type, :field, :breaking
 
         def initialize(input_object_type, field)
           @input_object_type = input_object_type
           @field = field
+          @breaking = true
         end
 
         def message
@@ -80,12 +86,13 @@ module GraphQL
       end
 
       class FieldArgumentRemoved
-        attr_reader :object_type, :field, :argument
+        attr_reader :object_type, :field, :argument, :breaking
 
         def initialize(object_type, field, argument)
           @object_type = object_type
           @field = field
           @argument = argument
+          @breaking = true
         end
 
         def message
@@ -102,11 +109,12 @@ module GraphQL
       # end
 
       class FieldRemoved
-        attr_reader :object_type, :field
+        attr_reader :object_type, :field, :breaking
 
         def initialize(object_type, field)
           @object_type = object_type
           @field = field
+          @breaking = true
         end
 
         def message
@@ -119,11 +127,12 @@ module GraphQL
       # end
 
       class ObjectTypeInterfaceRemoved
-        attr_reader :interface, :object_type
+        attr_reader :interface, :object_type, :breaking
 
         def initialize(interface, object_type)
           @interface = interface
           @object_type = object_type
+          @breaking = true
         end
 
         def message
@@ -134,10 +143,11 @@ module GraphQL
       # Non-Breaking Changes
 
       class TypeAdded
-        attr_reader :type
+        attr_reader :type, :breaking
 
         def initialize(type)
           @type = type
+          @breaking = false
         end
 
         def message
@@ -146,16 +156,20 @@ module GraphQL
       end
 
       class DirectiveAdded
+        attr_reader :breaking
+
         def initialize(*)
+          @breaking = false
         end
       end
 
       class TypeDescriptionChanged
-        attr_reader :old_type, :new_type
+        attr_reader :old_type, :new_type, :breaking
 
         def initialize(old_type, new_type)
           @old_type = old_type
           @new_type = new_type
+          @breaking = false
         end
 
         def message
@@ -164,11 +178,12 @@ module GraphQL
       end
 
       class EnumValueAdded
-        attr_reader :enum_type, :enum_value
+        attr_reader :enum_type, :enum_value, :breaking
 
         def initialize(enum_type, enum_value)
           @enum_type = enum_type
           @enum_value = enum_value
+          @breaking = false
         end
 
         def message
@@ -187,11 +202,12 @@ module GraphQL
       end
 
       class UnionMemberAdded
-        attr_reader :union_type, :union_member
+        attr_reader :union_type, :union_member, :breaking
 
         def initialize(union_type, union_member)
           @union_member = union_member
           @union_type = union_type
+          @breaking = false
         end
 
         def message
@@ -200,12 +216,13 @@ module GraphQL
       end
 
       class InputFieldDescriptionChanged
-        attr_reader :input_type, :old_field, :new_field
+        attr_reader :input_type, :old_field, :new_field, :breaking
 
         def initialize(input_type, old_field, new_field)
           @input_type = input_type
           @old_field = old_field
           @new_field = new_field
+          @breaking = false
         end
 
         def message
@@ -220,12 +237,13 @@ module GraphQL
       end
 
       class FieldDescriptionChanged
-        attr_reader :type, :old_field, :new_field
+        attr_reader :type, :old_field, :new_field, :breaking
 
         def initialize(type, old_field, new_field)
           @type = type
           @old_field = old_field
           @new_field = new_field
+          @breaking = false
         end
 
         def message
@@ -235,13 +253,14 @@ module GraphQL
       end
 
       class FieldArgumentDescriptionChanged
-        attr_reader :type, :field, :old_argument, :new_argument
+        attr_reader :type, :field, :old_argument, :new_argument, :breaking
 
         def initialize(type, field, old_argument, new_argument)
           @type = type
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
+          @breaking = false
         end
 
         def message
@@ -256,12 +275,13 @@ module GraphQL
       end
 
       class FieldDeprecationChanged
-        attr_reader :type, :old_field, :new_field
+        attr_reader :type, :old_field, :new_field, :breaking
 
         def initialize(type, old_field, new_field)
           @type = type
           @old_field = old_field
           @new_field = new_field
+          @breaking = false
         end
 
         def message
@@ -271,12 +291,13 @@ module GraphQL
       end
 
       class InputFieldDefaultChanged
-        attr_reader :input_type, :old_field, :new_field
+        attr_reader :input_type, :old_field, :new_field, :breaking
 
         def initialize(input_type, old_field, new_field)
           @input_type = input_type
           @old_field = old_field
           @new_field = new_field
+          @breaking = false
         end
 
         def message
@@ -286,13 +307,14 @@ module GraphQL
       end
 
       class FieldArgumentDefaultChanged
-        attr_reader :type, :field, :old_argument, :new_argument
+        attr_reader :type, :field, :old_argument, :new_argument, :breaking
 
         def initialize(type, field, old_argument, new_argument)
           @type = type
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
+          @breaking = false
         end
 
         def message
@@ -307,11 +329,12 @@ module GraphQL
       end
 
       class ObjectTypeInterfaceAdded
-        attr_reader :interface, :object_type
+        attr_reader :interface, :object_type, :breaking
 
         def initialize(interface, object_type)
           @interface = interface
           @object_type = object_type
+          @breaking = false
         end
 
         def message
@@ -320,11 +343,12 @@ module GraphQL
       end
 
       class FieldAdded
-        attr_reader :object_type, :field
+        attr_reader :object_type, :field, :breaking
 
         def initialize(object_type, field)
           @object_type = object_type
           @field = field
+          @breaking = false
         end
 
         def message
@@ -460,7 +484,7 @@ module GraphQL
       # Maybe Breaking
 
       class InputFieldAdded
-        attr_reader :input_object_type, :field
+        attr_reader :input_object_type, :field, :breaking
 
         def initialize(input_object_type, field)
           @input_object_type = input_object_type
@@ -473,12 +497,13 @@ module GraphQL
       end
 
       class FieldArgumentAdded
-        attr_reader :type, :field, :argument
+        attr_reader :type, :field, :argument, :breaking
 
         def initialize(type, field, argument)
           @type = type
           @field = field
           @argument = argument
+          @breaking = false
         end
 
         def message
@@ -492,12 +517,13 @@ module GraphQL
       end
 
       class InputFieldTypeChanged
-        attr_reader :input_type, :old_input_field, :new_input_field
+        attr_reader :input_type, :old_input_field, :new_input_field, :breaking
 
         def initialize(input_type, old_input_field, new_input_field)
           @input_type = input_type
           @old_input_field = old_input_field
           @new_input_field = new_input_field
+          @breaking = false
         end
 
         def message
@@ -506,13 +532,14 @@ module GraphQL
       end
 
       class FieldArgumentTypeChanged
-        attr_reader :type, :field, :old_argument, :new_argument
+        attr_reader :type, :field, :old_argument, :new_argument, :breaking
 
         def initialize(type, field, old_argument, new_argument)
           @type = type
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
+          @breaking = false
         end
 
         def message
@@ -527,12 +554,13 @@ module GraphQL
       end
 
       class FieldTypeChanged
-        attr_reader :type, :old_field, :new_field
+        attr_reader :type, :old_field, :new_field, :breaking
 
         def initialize(type, old_field, new_field)
           @type = type
           @old_field = old_field
           @new_field = new_field
+          @breaking = false
         end
 
         def message
