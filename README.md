@@ -63,6 +63,11 @@ are all namespaced under the `Changes` module.
 
 Possible changes are all found in [changes.rb](lib/graphql/schema_comparator/changes.rb).
 
+## TODO
+
+  - [ ] Handle changes in schema directives
+  - [ ] Test each differ
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
