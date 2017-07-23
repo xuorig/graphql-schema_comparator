@@ -36,7 +36,7 @@ module GraphQL
         end
 
         def message
-          "#{old_type.name}'s kind has changed from `#{old_type.kind}` to `#{new_type.kind}`"
+          "`#{old_type.name}` kind changed from `#{old_type.kind}` to `#{new_type.kind}`"
         end
       end
 
@@ -54,7 +54,7 @@ module GraphQL
       end
 
       class UnionMemberRemoved
-        attr_reader :union_type, :member_type
+        attr_reader :union_type, :union_member
 
         def initialize(union_type, union_member)
           @union_member = union_member
@@ -62,7 +62,7 @@ module GraphQL
         end
 
         def message
-          "Union member #{member_type.name} was removed from Union type #{union_type.name}"
+          "Union member `#{union_member.name}` was removed from Union type `#{union_type.name}`"
         end
       end
 
@@ -75,7 +75,7 @@ module GraphQL
         end
 
         def message
-          "Input field #{field.name} was removed from input object type #{input_object_type.name}"
+          "Input field `#{field.name}` was removed from input object type `#{input_object_type.name}`"
         end
       end
 
@@ -136,15 +136,14 @@ module GraphQL
       # Non-Breaking Changes
 
       class TypeAdded
-        attr_reader :interface, :object_type
+        attr_reader :type
 
-        def initialize(interface, object_type)
-          @interface = interface
-          @object_type = object_type
+        def initialize(type)
+          @type = type
         end
 
         def message
-          "`#{object_type.name}` object type no longer implements `#{interface.name}` interface"
+          "`#{type.name}` was added"
         end
       end
 
@@ -167,7 +166,15 @@ module GraphQL
       end
 
       class EnumValueAdded
-        def initialize(*)
+        attr_reader :enum_type, :enum_value
+
+        def initialize(enum_type, enum_value)
+          @enum_type = enum_type
+          @enum_value = enum_value
+        end
+
+        def message
+          "Enum value #{enum_value.name} was added on enum type #{enum_type.name}"
         end
       end
 
@@ -182,12 +189,30 @@ module GraphQL
       end
 
       class UnionMemberAdded
-        def initialize(*)
+        attr_reader :union_type, :union_member
+
+        def initialize(union_type, union_member)
+          @union_member = union_member
+          @union_type = union_type
+        end
+
+        def message
+          "Union member `#{union_member.name}` was added to Union type `#{union_type.name}`"
         end
       end
 
       class InputFieldDescriptionChanged
-        def initialize(*)
+        attr_reader :input_type, :old_field, :new_field
+
+        def initialize(input_type, old_field, new_field)
+          @input_type = input_type
+          @old_field = old_field
+          @new_field = new_field
+        end
+
+        def message
+          "Input field `#{input_type.name}.#{old_field.name}` description changed"\
+            " from `#{old_field.description}` to `#{new_field.description}`"
         end
       end
 
@@ -217,7 +242,17 @@ module GraphQL
       end
 
       class InputFieldDefaultChanged
-        def initialize(*)
+        attr_reader :input_type, :old_field, :new_field
+
+        def initialize(input_type, old_field, new_field)
+          @input_type = input_type
+          @old_field = old_field
+          @new_field = new_field
+        end
+
+        def message
+          "Input field `#{input_type.name}.#{old_field.name}` default changed"\
+            " from `#{old_field.default_value}` to `#{new_field.default_value}`"
         end
       end
 
@@ -369,7 +404,15 @@ module GraphQL
       # Maybe Breaking
 
       class InputFieldAdded
-        def initialize(*)
+        attr_reader :input_object_type, :field
+
+        def initialize(input_object_type, field)
+          @input_object_type = input_object_type
+          @field = field
+        end
+
+        def message
+          "Input field `#{field.name}` was added to input object type `#{input_object_type.name}`"
         end
       end
 
@@ -384,7 +427,16 @@ module GraphQL
       end
 
       class InputFieldTypeChanged
-        def initialize(*)
+        attr_reader :input_type, :old_input_field, :new_input_field
+
+        def initialize(input_type, old_input_field, new_input_field)
+          @input_type = input_type
+          @old_input_field = old_input_field
+          @new_input_field = new_input_field
+        end
+
+        def message
+          "Input field `#{input_type}.#{old_input_field.name}` changed type from #{old_input_field.type} to #{new_input_field.type}"
         end
       end
 
