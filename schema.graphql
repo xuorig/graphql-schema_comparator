@@ -1,0 +1,1 @@
+schema { query: Query } type Query { a: String }
