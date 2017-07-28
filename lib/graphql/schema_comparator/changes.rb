@@ -499,6 +499,7 @@ module GraphQL
         def initialize(input_object_type, field)
           @input_object_type = input_object_type
           @field = field
+          @breaking = field.type.kind.non_null? ? true : false
         end
 
         def message
@@ -513,7 +514,8 @@ module GraphQL
           @type = type
           @field = field
           @argument = argument
-          @breaking = false
+          # TODO: should at least have a warning that it may still be breaking
+          @breaking = argument.type.kind.non_null? ? true : false
         end
 
         def message
@@ -584,7 +586,7 @@ module GraphQL
         def initialize(old_schema, new_schema)
           @old_schema = old_schema
           @new_schema = new_schema
-          @breaking = false
+          @breaking = true
         end
 
         def message
@@ -596,7 +598,7 @@ module GraphQL
         def initialize(old_schema, new_schema)
           @old_schema = old_schema
           @new_schema = new_schema
-          @breaking = false
+          @breaking = true
         end
 
         def message
