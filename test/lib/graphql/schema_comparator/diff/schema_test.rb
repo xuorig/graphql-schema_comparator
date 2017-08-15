@@ -135,8 +135,8 @@ describe GraphQL::SchemaComparator::Diff::Schema do
         "Description for argument `a` on field `WithArguments.a` changed from `Meh` to `Description for a`",
         "Type for argument `b` on field `WithArguments.a` changed from `String` to `String!`",
         "Default value for argument `arg` on field `WithArguments.b` changed from `1` to `2`",
-        "Enum Value C was removed from Enum Options",
-        "Enum value D was added on enum type Options"
+        "Enum value `C` was removed from enum `Options`",
+        "Enum value `D` was added to enum `Options`"
       ], differ.diff.map(&:message)
     end
   end

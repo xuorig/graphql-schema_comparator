@@ -53,7 +53,7 @@ module GraphQL
         end
 
         def message
-          "Enum Value #{enum_value.name} was removed from Enum #{enum_type.name}"
+          "Enum value `#{enum_value.name}` was removed from enum `#{enum_type.name}`"
         end
       end
 
@@ -197,7 +197,7 @@ module GraphQL
         end
 
         def message
-          "Enum value #{enum_value.name} was added on enum type #{enum_type.name}"
+          "Enum value `#{enum_value.name}` was added to enum `#{enum_type.name}`"
         end
       end
 
