@@ -46,14 +46,14 @@ module GraphQL
       class EnumValueRemoved
         attr_reader :enum_value, :enum_type, :breaking
 
-        def initialize(enum_value, enum_type)
+        def initialize(enum_type, enum_value)
           @enum_value = enum_value
           @enum_type = enum_type
           @breaking = true
         end
 
         def message
-          "Enum Value #{enum_value.name} was removed from Enum #{enum_type.name}"
+          "Enum value `#{enum_value.name}` was removed from enum `#{enum_type.name}`"
         end
       end
 
@@ -197,7 +197,7 @@ module GraphQL
         end
 
         def message
-          "Enum value #{enum_value.name} was added on enum type #{enum_type.name}"
+          "Enum value `#{enum_value.name}` was added to enum `#{enum_type.name}`"
         end
       end
 
