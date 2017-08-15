@@ -58,6 +58,7 @@ access information on the changes between the two schemas.
  - `result.breaking?` returns true if any breaking changes were found between the two schemas
  - `result.identical?` returns true if the two schemas were identical
  - `result.breaking_changes` returns the list of breaking changes found between schemas.
+ - `result.non_breaking_changes` returns the list of non-breaking changes found between schemas.
 - `result.changes` returns the full list of change objects.
 
 ### Change Objects
