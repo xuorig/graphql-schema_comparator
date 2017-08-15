@@ -46,7 +46,7 @@ module GraphQL
       class EnumValueRemoved
         attr_reader :enum_value, :enum_type, :breaking
 
-        def initialize(enum_value, enum_type)
+        def initialize(enum_type, enum_value)
           @enum_value = enum_value
           @enum_type = enum_type
           @breaking = true
