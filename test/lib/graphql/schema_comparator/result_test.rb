@@ -1,6 +1,16 @@
 require "test_helper"
 
 describe GraphQL::SchemaComparator::Result do
+  describe "#changes" do
+    it "returns sorted changes" do
+      removed_z = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.define(name: "Z"), GraphQL::Field.define(name: "a"))
+      removed_a = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.define(name: "A"), GraphQL::Field.define(name: "a"))
+      added_a = GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.define(name: "A"), GraphQL::Field.define(name: "a"))
+      result = GraphQL::SchemaComparator::Result.new([removed_z, added_a, removed_a])
+      assert_equal [removed_a, removed_z, added_a], result.changes
+    end
+  end
+
   describe "#identical?" do
     it "returns false when schemas have changes" do
       result = GraphQL::SchemaComparator::Result.new([

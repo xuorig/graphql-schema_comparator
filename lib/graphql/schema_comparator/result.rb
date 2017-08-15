@@ -4,7 +4,7 @@ module GraphQL
       attr_reader :changes
 
       def initialize(changes)
-        @changes = changes
+        @changes = changes.sort_by { |c| [c.breaking ? 1 : 2, c.message] }
       end
 
       def identical?
