@@ -36,8 +36,8 @@ describe GraphQL::SchemaComparator do
       result = GraphQL::SchemaComparator.compare(old_schema_idl, new_schema_idl)
 
       assert_equal [
+        "Field `Query.a` changed type from `String!` to `Int`",
         "Field `b` was added to object type `Query`",
-        "Field `Query.a` changed type from `String!` to `Int`"
       ], result.changes.map(&:message)
 
       assert_equal true, result.breaking?
@@ -47,8 +47,8 @@ describe GraphQL::SchemaComparator do
       result = GraphQL::SchemaComparator.compare(old_schema, new_schema)
 
       assert_equal [
+        "Field `Query.a` changed type from `String!` to `Int`",
         "Field `b` was added to object type `Query`",
-        "Field `Query.a` changed type from `String!` to `Int`"
       ], result.changes.map(&:message)
 
       assert_equal true, result.breaking?
