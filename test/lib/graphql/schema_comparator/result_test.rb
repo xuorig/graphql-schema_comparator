@@ -31,7 +31,7 @@ describe GraphQL::SchemaComparator::Result do
     end
   end
 
-  describe "#breaking_changes" do
+  describe "#breaking_changes / #non_breaking_changes" do
     let(:field_added) {
       GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.new, GraphQL::Field.new)
     }
@@ -52,6 +52,7 @@ describe GraphQL::SchemaComparator::Result do
       ])
 
       assert_equal [field_removed], result.breaking_changes
+      assert_equal [field_added, type_description_changed], result.non_breaking_changes
     end
   end
 end
