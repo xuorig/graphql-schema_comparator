@@ -1,5 +1,7 @@
 # GraphQL::SchemaComparator
 
+[![Build Status](https://travis-ci.org/xuorig/graphql-schema_comparator.svg?branch=master)](https://travis-ci.org/xuorig/graphql-schema_comparator)
+
 `GraphQL::SchemaComparator` is a GraphQL Schema comparator. What does that mean? `GraphQL::SchemaComparator` takes
 two GraphQL schemas and outputs a list of changes that happened between the two versions. This is useful for many things:
 
