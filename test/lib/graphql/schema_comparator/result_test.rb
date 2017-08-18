@@ -62,7 +62,7 @@ describe GraphQL::SchemaComparator::Result do
       ])
 
       assert_equal [field_removed], result.breaking_changes
-      assert_equal [field_added, type_description_changed], result.non_breaking_changes
+      assert_equal [type_description_changed, field_added], result.non_breaking_changes
     end
   end
 end
