@@ -12,7 +12,7 @@ module GraphQL
         end
 
         def message
-          "#{removed_type.name} was removed"
+          "`#{removed_type.name}` was removed"
         end
       end
 
@@ -25,7 +25,7 @@ module GraphQL
         end
 
         def message
-          "#{removed_directive.name} was removed"
+          "`#{removed_directive.name}` was removed"
         end
       end
 
