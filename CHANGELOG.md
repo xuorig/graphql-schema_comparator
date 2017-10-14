@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0 (Oct 14 2017)
+
+### New features
+
+- Top level Directive definitions are now diffed, but not directives used on definitions (Coming soon)
+- Base class for changes added.
+
+### breaking changes
+
+- `breaking` method on change objects has been renamed `breaking?` for style
+
+### Bug fixes
+
+- Fix message for `EnumValueRemoved` (#5)
+
 ## 0.2.0 (Aug 18 2017)
 
 ### New features
