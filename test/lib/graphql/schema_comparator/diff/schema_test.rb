@@ -48,6 +48,11 @@ describe GraphQL::SchemaComparator::Diff::Schema do
           B
           C
         }
+
+        directive @yolo(
+          # Included when true.
+          someArg: Boolean!
+        ) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
       SCHEMA
     )
   end
@@ -102,6 +107,16 @@ describe GraphQL::SchemaComparator::Diff::Schema do
           B
           D
         }
+
+        directive @yolo(
+          # Included when true.
+          someArg: String!
+        ) on FIELD | FIELD_DEFINITION
+
+        directive @yolo2(
+          # Included when true.
+          someArg: String!
+        ) on FIELD
       SCHEMA
     )
   end
@@ -136,7 +151,11 @@ describe GraphQL::SchemaComparator::Diff::Schema do
         "Type for argument `b` on field `WithArguments.a` changed from `String` to `String!`",
         "Default value for argument `arg` on field `WithArguments.b` changed from `1` to `2`",
         "Enum value `C` was removed from enum `Options`",
-        "Enum value `D` was added to enum `Options`"
+        "Enum value `D` was added to enum `Options`",
+        "Directive `yolo2` was added", "Location `FRAGMENT_SPREAD` was removed from directive `yolo`",
+        "Location `INLINE_FRAGMENT` was removed from directive `yolo`",
+        "Location `FIELD_DEFINITION` was added to directive `yolo`",
+        "Type for argument `someArg` on directive `yolo` changed from `String!` to `Boolean!`"
       ], differ.diff.map(&:message)
     end
   end
