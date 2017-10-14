@@ -1,9 +1,17 @@
 module GraphQL
   module SchemaComparator
     module Changes
-      # Breaking Changes
+      class AbstractChange
+        def message
+          raise NotImplementedError
+        end
 
-      class TypeRemoved
+        def breaking
+          raise NotImplementedError
+        end
+      end
+
+      class TypeRemoved < AbstractChange
         attr_reader :removed_type, :breaking
 
         def initialize(removed_type)
@@ -16,7 +24,7 @@ module GraphQL
         end
       end
 
-      class DirectiveRemoved
+      class DirectiveRemoved < AbstractChange
         attr_reader :removed_directive, :breaking
 
         def initialize(removed_directive)
@@ -29,7 +37,7 @@ module GraphQL
         end
       end
 
-      class TypeKindChanged
+      class TypeKindChanged < AbstractChange
         attr_reader :old_type, :new_type, :breaking
 
         def initialize(old_type, new_type)
@@ -43,7 +51,7 @@ module GraphQL
         end
       end
 
-      class EnumValueRemoved
+      class EnumValueRemoved < AbstractChange
         attr_reader :enum_value, :enum_type, :breaking
 
         def initialize(enum_type, enum_value)
@@ -57,7 +65,7 @@ module GraphQL
         end
       end
 
-      class UnionMemberRemoved
+      class UnionMemberRemoved < AbstractChange
         attr_reader :union_type, :union_member, :breaking
 
         def initialize(union_type, union_member)
@@ -71,7 +79,7 @@ module GraphQL
         end
       end
 
-      class InputFieldRemoved
+      class InputFieldRemoved < AbstractChange
         attr_reader :input_object_type, :field, :breaking
 
         def initialize(input_object_type, field)
@@ -85,7 +93,7 @@ module GraphQL
         end
       end
 
-      class FieldArgumentRemoved
+      class FieldArgumentRemoved < AbstractChange
         attr_reader :object_type, :field, :argument, :breaking
 
         def initialize(object_type, field, argument)
@@ -104,7 +112,7 @@ module GraphQL
       # class DirectiveArgumentRemoved
       # end
 
-      class SchemaQueryTypeChanged
+      class SchemaQueryTypeChanged < AbstractChange
         attr_reader :old_schema, :new_schema, :breaking
 
         def initialize(old_schema, new_schema)
@@ -118,7 +126,7 @@ module GraphQL
         end
       end
 
-      class FieldRemoved
+      class FieldRemoved < AbstractChange
         attr_reader :object_type, :field, :breaking
 
         def initialize(object_type, field)
@@ -136,7 +144,7 @@ module GraphQL
       # class DirectiveLocationRemoved
       # end
 
-      class ObjectTypeInterfaceRemoved
+      class ObjectTypeInterfaceRemoved < AbstractChange
         attr_reader :interface, :object_type, :breaking
 
         def initialize(interface, object_type)
@@ -152,7 +160,7 @@ module GraphQL
 
       # Non-Breaking Changes
 
-      class TypeAdded
+      class TypeAdded < AbstractChange
         attr_reader :type, :breaking
 
         def initialize(type)
@@ -165,7 +173,7 @@ module GraphQL
         end
       end
 
-      class DirectiveAdded
+      class DirectiveAdded < AbstractChange
         attr_reader :breaking
 
         def initialize(*)
@@ -173,7 +181,7 @@ module GraphQL
         end
       end
 
-      class TypeDescriptionChanged
+      class TypeDescriptionChanged < AbstractChange
         attr_reader :old_type, :new_type, :breaking
 
         def initialize(old_type, new_type)
@@ -187,7 +195,7 @@ module GraphQL
         end
       end
 
-      class EnumValueAdded
+      class EnumValueAdded < AbstractChange
         attr_reader :enum_type, :enum_value, :breaking
 
         def initialize(enum_type, enum_value)
@@ -201,17 +209,17 @@ module GraphQL
         end
       end
 
-      class EnumValueDescriptionChanged
+      class EnumValueDescriptionChanged < AbstractChange
         def initialize(*)
         end
       end
 
-      class EnumValueDeprecated
+      class EnumValueDeprecated < AbstractChange
         def initialize(*)
         end
       end
 
-      class UnionMemberAdded
+      class UnionMemberAdded < AbstractChange
         attr_reader :union_type, :union_member, :breaking
 
         def initialize(union_type, union_member)
@@ -225,7 +233,7 @@ module GraphQL
         end
       end
 
-      class InputFieldDescriptionChanged
+      class InputFieldDescriptionChanged < AbstractChange
         attr_reader :input_type, :old_field, :new_field, :breaking
 
         def initialize(input_type, old_field, new_field)
@@ -241,12 +249,12 @@ module GraphQL
         end
       end
 
-      class DirectiveDescriptionChanged
+      class DirectiveDescriptionChanged < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldDescriptionChanged
+      class FieldDescriptionChanged < AbstractChange
         attr_reader :type, :old_field, :new_field, :breaking
 
         def initialize(type, old_field, new_field)
@@ -262,7 +270,7 @@ module GraphQL
         end
       end
 
-      class FieldArgumentDescriptionChanged
+      class FieldArgumentDescriptionChanged < AbstractChange
         attr_reader :type, :field, :old_argument, :new_argument, :breaking
 
         def initialize(type, field, old_argument, new_argument)
@@ -279,12 +287,12 @@ module GraphQL
         end
       end
 
-      class DirectiveArgumentDescriptionChanged
+      class DirectiveArgumentDescriptionChanged < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldDeprecationChanged
+      class FieldDeprecationChanged < AbstractChange
         attr_reader :type, :old_field, :new_field, :breaking
 
         def initialize(type, old_field, new_field)
@@ -300,7 +308,7 @@ module GraphQL
         end
       end
 
-      class InputFieldDefaultChanged
+      class InputFieldDefaultChanged < AbstractChange
         attr_reader :input_type, :old_field, :new_field, :breaking
 
         def initialize(input_type, old_field, new_field)
@@ -316,7 +324,7 @@ module GraphQL
         end
       end
 
-      class FieldArgumentDefaultChanged
+      class FieldArgumentDefaultChanged < AbstractChange
         attr_reader :type, :field, :old_argument, :new_argument, :breaking
 
         def initialize(type, field, old_argument, new_argument)
@@ -333,12 +341,12 @@ module GraphQL
         end
       end
 
-      class DirectiveArgumentDefaultChanged
+      class DirectiveArgumentDefaultChanged < AbstractChange
         def initialize(*)
         end
       end
 
-      class ObjectTypeInterfaceAdded
+      class ObjectTypeInterfaceAdded < AbstractChange
         attr_reader :interface, :object_type, :breaking
 
         def initialize(interface, object_type)
@@ -352,7 +360,7 @@ module GraphQL
         end
       end
 
-      class FieldAdded
+      class FieldAdded < AbstractChange
         attr_reader :object_type, :field, :breaking
 
         def initialize(object_type, field)
@@ -366,134 +374,134 @@ module GraphQL
         end
       end
 
-      class DirectiveLocationAdded
+      class DirectiveLocationAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldAstDirectiveAdded
+      class FieldAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldAstDirectiveRemoved
+      class FieldAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class EnumValueAstDirectiveAdded
+      class EnumValueAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class EnumValueAstDirectiveRemoved
+      class EnumValueAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class InputFieldAstDirectiveAdded
+      class InputFieldAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class InputFieldAstDirectiveRemoved
+      class InputFieldAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class DirectiveArgumentAstDirectiveAdded
+      class DirectiveArgumentAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class DirectiveArgumentAstDirectiveRemoved
+      class DirectiveArgumentAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldArgumentAstDirectiveAdded
+      class FieldArgumentAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldArgumentAstDirectiveRemoved
+      class FieldArgumentAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class ObjectTypeAstDirectiveAdded
+      class ObjectTypeAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class ObjectTypeAstDirectiveRemoved
+      class ObjectTypeAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class InterfaceTypeAstDirectiveAdded
+      class InterfaceTypeAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class InterfaceTypeAstDirectiveRemoved
+      class InterfaceTypeAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class UnionTypeAstDirectiveAdded
+      class UnionTypeAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class UnionTypeAstDirectiveRemoved
+      class UnionTypeAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class EnumTypeAstDirectiveAdded
+      class EnumTypeAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class EnumTypeAstDirectiveRemoved
+      class EnumTypeAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class ScalarTypeAstDirectiveAdded
+      class ScalarTypeAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class ScalarTypeAstDirectiveRemoved
+      class ScalarTypeAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class InputObjectTypeAstDirectiveAdded
+      class InputObjectTypeAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class InputObjectTypeAstDirectiveRemoved
+      class InputObjectTypeAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
-      class SchemaAstDirectiveAdded
+      class SchemaAstDirectiveAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class SchemaAstDirectiveRemoved
+      class SchemaAstDirectiveRemoved < AbstractChange
         def initialize(*)
         end
       end
 
       # Maybe Breaking
 
-      class InputFieldAdded
+      class InputFieldAdded < AbstractChange
         attr_reader :input_object_type, :field, :breaking
 
         def initialize(input_object_type, field)
@@ -507,7 +515,7 @@ module GraphQL
         end
       end
 
-      class FieldArgumentAdded
+      class FieldArgumentAdded < AbstractChange
         attr_reader :type, :field, :argument, :breaking
 
         def initialize(type, field, argument)
@@ -523,12 +531,12 @@ module GraphQL
         end
       end
 
-      class DirectiveArgumentAdded
+      class DirectiveArgumentAdded < AbstractChange
         def initialize(*)
         end
       end
 
-      class InputFieldTypeChanged
+      class InputFieldTypeChanged < AbstractChange
         attr_reader :input_type, :old_input_field, :new_input_field, :breaking
 
         def initialize(input_type, old_input_field, new_input_field)
@@ -543,7 +551,7 @@ module GraphQL
         end
       end
 
-      class FieldArgumentTypeChanged
+      class FieldArgumentTypeChanged < AbstractChange
         attr_reader :type, :field, :old_argument, :new_argument, :breaking
 
         def initialize(type, field, old_argument, new_argument)
@@ -560,12 +568,12 @@ module GraphQL
         end
       end
 
-      class DirectiveArgumentTypeChanged
+      class DirectiveArgumentTypeChanged < AbstractChange
         def initialize(*)
         end
       end
 
-      class FieldTypeChanged
+      class FieldTypeChanged < AbstractChange
         attr_reader :type, :old_field, :new_field, :breaking
 
         def initialize(type, old_field, new_field)
@@ -580,7 +588,7 @@ module GraphQL
         end
       end
 
-      class SchemaMutationTypeChanged
+      class SchemaMutationTypeChanged < AbstractChange
         attr_reader :old_schema, :new_schema, :breaking
 
         def initialize(old_schema, new_schema)
@@ -594,7 +602,7 @@ module GraphQL
         end
       end
 
-      class SchemaSubscriptionTypeChanged
+      class SchemaSubscriptionTypeChanged < AbstractChange
         def initialize(old_schema, new_schema)
           @old_schema = old_schema
           @new_schema = new_schema
