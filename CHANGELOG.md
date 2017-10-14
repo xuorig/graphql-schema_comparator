@@ -11,10 +11,6 @@
 
 - `breaking` method on change objects has been renamed `breaking?` for style
 
-### Bug fixes
-
-- Fix message for `EnumValueRemoved` (#5)
-
 ## 0.2.0 (Aug 18 2017)
 
 ### New features
