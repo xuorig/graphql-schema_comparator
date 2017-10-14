@@ -25,15 +25,15 @@ module GraphQL
       end
 
       class DirectiveRemoved < AbstractChange
-        attr_reader :removed_directive, :breaking
+        attr_reader :directive, :breaking
 
-        def initialize(removed_directive)
-          @removed_directive = removed_directive
+        def initialize(directive)
+          @directive = directive
           @breaking = true
         end
 
         def message
-          "`#{removed_directive.name}` was removed"
+          "`#{directive.name}` was removed"
         end
       end
 
@@ -108,9 +108,19 @@ module GraphQL
         end
       end
 
-      # TODO
-      # class DirectiveArgumentRemoved
-      # end
+      class DirectiveArgumentRemoved < AbstractChange
+        attr_reader :directive, :argument, :breaking
+
+        def initialize(directive, argument)
+          @directive = directive
+          @argument = argument
+          @breaking = true
+        end
+
+        def message
+          "Argument `#{argument.name}` was removed from directive `#{directive.name}`"
+        end
+      end
 
       class SchemaQueryTypeChanged < AbstractChange
         attr_reader :old_schema, :new_schema, :breaking
@@ -140,9 +150,19 @@ module GraphQL
         end
       end
 
-      # TODO
-      # class DirectiveLocationRemoved
-      # end
+      class DirectiveLocationRemoved < AbstractChange
+        attr_reader :directive, :location, :breaking
+
+        def initialize(directive, location)
+          @directive = directive
+          @location = location
+          @breaking = true
+        end
+
+        def message
+          "Location `#{location}` was removed from directive `#{directive.name}`"
+        end
+      end
 
       class ObjectTypeInterfaceRemoved < AbstractChange
         attr_reader :interface, :object_type, :breaking
@@ -174,10 +194,15 @@ module GraphQL
       end
 
       class DirectiveAdded < AbstractChange
-        attr_reader :breaking
+        attr_reader :directive
 
-        def initialize(*)
+        def initialize(directive)
+          @directive = directive
           @breaking = false
+        end
+
+        def message
+          "Directive `#{directive.name}` was added"
         end
       end
 
@@ -250,7 +275,17 @@ module GraphQL
       end
 
       class DirectiveDescriptionChanged < AbstractChange
-        def initialize(*)
+        attr_reader :old_directive, :new_directive, :breaking
+
+        def initialize(old_directive, new_directive)
+          @old_directive = old_directive
+          @new_directive = new_directive
+          @breaking = false
+        end
+
+        def message
+          "Directive `#{new_directive.name}` description changed"\
+            " from `#{old_directive.description}` to `#{new_directive.description}`"
         end
       end
 
@@ -288,7 +323,18 @@ module GraphQL
       end
 
       class DirectiveArgumentDescriptionChanged < AbstractChange
-        def initialize(*)
+        attr_reader :directive, :old_argument, :new_argument, :breaking
+
+        def initialize(directive, old_argument, new_argument)
+          @directive = directive
+          @old_argument = old_argument
+          @new_argument = new_argument
+          @breaking = false
+        end
+
+        def message
+          "Description for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
+            " from `#{old_argument.description}` to `#{new_argument.description}`"
         end
       end
 
@@ -342,7 +388,18 @@ module GraphQL
       end
 
       class DirectiveArgumentDefaultChanged < AbstractChange
-        def initialize(*)
+        attr_reader :directive, :old_argument, :new_argument, :breaking
+
+        def initialize(directive, old_argument, new_argument)
+          @directive = directive
+          @old_argument = old_argument
+          @new_argument = new_argument
+          @breaking = false
+        end
+
+        def message
+          "Default value for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
+            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
         end
       end
 
@@ -375,7 +432,16 @@ module GraphQL
       end
 
       class DirectiveLocationAdded < AbstractChange
-        def initialize(*)
+        attr_reader :directive, :location, :breaking
+
+        def initialize(directive, location)
+          @directive = directive
+          @location = location
+          @breaking = false
+        end
+
+        def message
+          "Location `#{location}` was added to directive `#{directive.name}`"
         end
       end
 
@@ -532,7 +598,16 @@ module GraphQL
       end
 
       class DirectiveArgumentAdded < AbstractChange
-        def initialize(*)
+        attr_reader :directive, :argument, :breaking
+
+        def initialize(directive, argument)
+          @directive = directive
+          @argument = argument
+          @breaking = false
+        end
+
+        def message
+          "Argument `#{argument.name}` was added to directive `#{directive.name}`"
         end
       end
 
@@ -569,7 +644,18 @@ module GraphQL
       end
 
       class DirectiveArgumentTypeChanged < AbstractChange
-        def initialize(*)
+        attr_reader :directive, :old_argument, :new_argument, :breaking
+
+        def initialize(directive, old_argument, new_argument)
+          @directive = directive
+          @old_argument = old_argument
+          @new_argument = new_argument
+          @breaking = false
+        end
+
+        def message
+          "Type for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
+            " from `#{old_argument.type}` to `#{new_argument.type}`"
         end
       end
 

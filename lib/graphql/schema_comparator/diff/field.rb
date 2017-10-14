@@ -36,8 +36,6 @@ module GraphQL
             changes += Diff::Argument.new(new_type, new_field, old_arg, new_arg).diff
           end
 
-          # TODO: directives
-
           changes
         end
 

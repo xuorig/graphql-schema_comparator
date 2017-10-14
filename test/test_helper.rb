@@ -1,6 +1,5 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require 'graphql'
 require 'pry'
 require 'pry-byebug'
 

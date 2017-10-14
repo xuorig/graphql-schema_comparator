@@ -1,12 +1,3 @@
-require "graphql/schema_comparator/diff/enum"
-require "graphql/schema_comparator/diff/union"
-require "graphql/schema_comparator/diff/input_object"
-require "graphql/schema_comparator/diff/input_field"
-require "graphql/schema_comparator/diff/object_type"
-require "graphql/schema_comparator/diff/interface"
-require "graphql/schema_comparator/diff/field"
-require "graphql/schema_comparator/diff/argument"
-
 module GraphQL
   module SchemaComparator
     module Diff
@@ -17,6 +8,9 @@ module GraphQL
 
           @old_types = old_schema.types
           @new_types = new_schema.types
+
+          @old_directives = old_schema.directives
+          @new_directives = new_schema.directives
         end
 
         def diff
@@ -86,8 +80,16 @@ module GraphQL
         end
 
         def changes_in_directives
-          # TODO
-          []
+          changes = []
+
+          changes += removed_directives.map { |directive| Changes::DirectiveRemoved.new(directive) }
+          changes += added_directives.map { |directive| Changes::DirectiveAdded.new(directive) }
+
+          each_common_directive do |old_directive, new_directive|
+            changes += Diff::Directive.new(old_directive, new_directive).diff
+          end
+
+          changes
         end
 
         private
@@ -110,7 +112,25 @@ module GraphQL
           (new_types.keys - old_types.keys).map { |type_name| new_schema.types[type_name] }
         end
 
-        attr_reader :old_schema, :new_schema, :old_types, :new_types
+        def removed_directives
+          (old_directives.keys - new_directives.keys).map { |directive_name| old_schema.directives[directive_name] }
+        end
+
+        def added_directives
+          (new_directives.keys - old_directives.keys).map { |directive_name| new_schema.directives[directive_name] }
+        end
+
+        def each_common_directive(&block)
+          intersection = old_directives.keys & new_directives.keys
+          intersection.each do |common_directive_name|
+            old_directive = old_schema.directives[common_directive_name]
+            new_directive = new_schema.directives[common_directive_name]
+
+            block.call(old_directive, new_directive)
+          end
+        end
+
+        attr_reader :old_schema, :new_schema, :old_types, :new_types, :old_directives, :new_directives
       end
     end
   end

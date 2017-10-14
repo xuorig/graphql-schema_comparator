@@ -1,8 +1,20 @@
 require "graphql"
+
 require "graphql/schema_comparator/version"
-require "graphql/schema_comparator/diff/schema"
 require "graphql/schema_comparator/changes"
 require "graphql/schema_comparator/result"
+
+require "graphql/schema_comparator/diff/schema"
+require "graphql/schema_comparator/diff/argument"
+require "graphql/schema_comparator/diff/directive"
+require "graphql/schema_comparator/diff/directive_argument"
+require "graphql/schema_comparator/diff/enum"
+require "graphql/schema_comparator/diff/field"
+require "graphql/schema_comparator/diff/input_object"
+require "graphql/schema_comparator/diff/input_field"
+require "graphql/schema_comparator/diff/object_type"
+require "graphql/schema_comparator/diff/interface"
+require "graphql/schema_comparator/diff/union"
 
 module GraphQL
   module SchemaComparator
