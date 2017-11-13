@@ -31,7 +31,7 @@ class GraphQLSchema < Thor
     say "\n"
 
     result.changes.each do |change|
-      if change.breaking
+      if change.breaking?
         say "⚠️  #{change.message}", :yellow
       else
         say "✅  #{change.message}", :green
