@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 (Nov 13 2017)
+
+### Bug Fixes
+
+- Fix no method breaking issue https://github.com/xuorig/graphql-schema_comparator/issues/8
+
 ## 0.3.0 (Oct 14 2017)
 
 ### New features
