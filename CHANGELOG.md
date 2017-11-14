@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.2 (Nov 14 2017)
+
+### New Features
+
+Added changes:
+
+  - `EnumValueDeprecated`
+  - `EnumValueDescriptionChanged`
+
+### Bug fixes
+
+Fix issue in Enum differ (https://github.com/xuorig/graphql-schema_comparator/issues/9)
+
 ## 0.3.1 (Nov 13 2017)
 
 ### Bug Fixes
