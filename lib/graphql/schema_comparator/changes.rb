@@ -296,15 +296,46 @@ module GraphQL
         end
       end
 
-      # TODO
       class EnumValueDescriptionChanged < AbstractChange
-        def initialize(*)
+        attr_reader :enum, :old_enum_value, :new_enum_value
+
+        def initialize(enum, old_enum_value, new_enum_value)
+          @enum = enum
+          @old_enum_value = old_enum_value
+          @new_enum_value = new_enum_value
+        end
+
+        def message
+          "Description for enum value `#{enum.name}.#{new_enum_value.name}` changed from " \
+            "`#{old_enum_value.description}` to `#{new_enum_value.description}`"
+        end
+
+        def breaking?
+          false
         end
       end
 
-      # TODO
       class EnumValueDeprecated < AbstractChange
-        def initialize(*)
+        attr_reader :enum, :old_enum_value, :new_enum_value
+
+        def initialize(enum, old_enum_value, new_enum_value)
+          @enum = enum
+          @old_enum_value = old_enum_value
+          @new_enum_value = new_enum_value
+        end
+
+        def message
+          if old_enum_value.deprecation_reason
+            "Enum value `#{enum.name}.#{new_enum_value.name}` deprecation reason changed " \
+              "from `#{old_enum_value.deprecation_reason}` to `#{new_enum_value.deprecation_reason}`"
+          else
+            "Enum value `#{enum.name}.#{new_enum_value.name}` was deprecated with reason" \
+              " `#{new_enum_value.deprecation_reason}`"
+          end
+        end
+
+        def breaking?
+          false
         end
       end
 
