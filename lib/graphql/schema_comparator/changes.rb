@@ -819,7 +819,7 @@ module GraphQL
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
-          @breaking = true
+          @breaking = !safe_change?(old_argument.type, new_argument.type)
         end
 
         def message
@@ -829,6 +829,21 @@ module GraphQL
 
         def breaking?
           !!@breaking
+        end
+
+        private
+
+        def safe_change?(old_type, new_type)
+          if !old_type.kind.wraps? && !new_type.kind.wraps?
+            old_type.name == new_type.name
+          elsif old_type.kind.list?
+            new_type.kind.list? && safe_change?(old_type.of_type, new_type.of_type)
+          elsif old_type.kind.non_null?
+            (new_type.kind.non_null? && safe_change?(old_type.of_type, new_type.of_type)) ||
+              !new_type.kind.non_null? && safe_change?(old_type.of_type, new_type)
+          else
+            false
+          end
         end
       end
 
