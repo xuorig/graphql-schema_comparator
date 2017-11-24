@@ -1,6 +1,21 @@
 module GraphQL
   module SchemaComparator
     module Changes
+      module SafeTypeChange
+        def safe_change?(old_type, new_type)
+          if !old_type.kind.wraps? && !new_type.kind.wraps?
+            old_type == new_type
+          elsif old_type.kind.list? && new_type.kind.list?
+            safe_change?(old_type.of_type, new_type.of_type)
+          elsif old_type.kind.non_null?
+            of_type = new_type.kind.non_null? ? new_type.of_type : new_type
+            safe_change?(old_type.of_type, of_type)
+          else
+            false
+          end
+        end
+      end
+
       class AbstractChange
         def message
           raise NotImplementedError
@@ -793,13 +808,15 @@ module GraphQL
       end
 
       class InputFieldTypeChanged < AbstractChange
+        include SafeTypeChange
+
         attr_reader :input_type, :old_input_field, :new_input_field
 
         def initialize(input_type, old_input_field, new_input_field)
           @input_type = input_type
           @old_input_field = old_input_field
           @new_input_field = new_input_field
-          @breaking = true
+          @breaking = !safe_change?(old_input_field.type, new_input_field.type)
         end
 
         def message
@@ -812,6 +829,8 @@ module GraphQL
       end
 
       class FieldArgumentTypeChanged < AbstractChange
+        include SafeTypeChange
+
         attr_reader :type, :field, :old_argument, :new_argument
 
         def initialize(type, field, old_argument, new_argument)
@@ -829,21 +848,6 @@ module GraphQL
 
         def breaking?
           !!@breaking
-        end
-
-        private
-
-        def safe_change?(old_type, new_type)
-          if !old_type.kind.wraps? && !new_type.kind.wraps?
-            old_type.name == new_type.name
-          elsif old_type.kind.list?
-            new_type.kind.list? && safe_change?(old_type.of_type, new_type.of_type)
-          elsif old_type.kind.non_null?
-            (new_type.kind.non_null? && safe_change?(old_type.of_type, new_type.of_type)) ||
-              !new_type.kind.non_null? && safe_change?(old_type.of_type, new_type)
-          else
-            false
-          end
         end
       end
 
