@@ -2,14 +2,28 @@ module GraphQL
   module SchemaComparator
     module Changes
       module SafeTypeChange
-        def safe_change?(old_type, new_type)
+        def safe_change_for_field?(old_type, new_type)
+          if !old_type.kind.wraps? && !new_type.kind.wraps?
+            old_type == new_type
+          elsif new_type.kind.non_null?
+            of_type = old_type.kind.non_null? ? old_type.of_type : old_type
+            safe_change_for_field?(of_type, new_type.of_type)
+          elsif old_type.kind.list?
+            new_type.kind.list? && safe_change_for_field?(old_type.of_type, new_type.of_type) ||
+              new_type.kind.non_null? && safe_change_for_field?(old_type, new_type.of_type)
+          else
+            false
+          end
+        end
+
+        def safe_change_for_input_value?(old_type, new_type)
           if !old_type.kind.wraps? && !new_type.kind.wraps?
             old_type == new_type
           elsif old_type.kind.list? && new_type.kind.list?
-            safe_change?(old_type.of_type, new_type.of_type)
+            safe_change_for_input_value?(old_type.of_type, new_type.of_type)
           elsif old_type.kind.non_null?
             of_type = new_type.kind.non_null? ? new_type.of_type : new_type
-            safe_change?(old_type.of_type, of_type)
+            safe_change_for_input_value?(old_type.of_type, of_type)
           else
             false
           end
@@ -816,7 +830,7 @@ module GraphQL
           @input_type = input_type
           @old_input_field = old_input_field
           @new_input_field = new_input_field
-          @breaking = !safe_change?(old_input_field.type, new_input_field.type)
+          @breaking = !safe_change_for_input_value?(old_input_field.type, new_input_field.type)
         end
 
         def message
@@ -838,7 +852,7 @@ module GraphQL
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
-          @breaking = !safe_change?(old_argument.type, new_argument.type)
+          @breaking = !safe_change_for_input_value?(old_argument.type, new_argument.type)
         end
 
         def message
@@ -872,13 +886,15 @@ module GraphQL
       end
 
       class FieldTypeChanged < AbstractChange
+        include SafeTypeChange
+
         attr_reader :type, :old_field, :new_field
 
         def initialize(type, old_field, new_field)
           @type = type
           @old_field = old_field
           @new_field = new_field
-          @breaking = true
+          @breaking = !safe_change_for_field?(old_field.type, new_field.type)
         end
 
         def message
