@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 (Nov 27 2017)
+
+## Breaking Changes
+
+  - Argument and InputValue type changes are considered non
+    breaking if type goes from Null => Non-Null
+
 ## 0.3.2 (Nov 14 2017)
 
 ### New Features
