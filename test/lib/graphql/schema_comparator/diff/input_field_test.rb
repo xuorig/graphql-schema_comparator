@@ -28,7 +28,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         assert change.breaking?
 
-        assert_equal "Input field `Input.foo` changed type from String to Boolean", change.message
+        assert_equal "Input field `Input.foo` changed type from `String` to `Boolean`", change.message
       end
     end
 
@@ -48,7 +48,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         assert change.breaking?
 
-        assert_equal "Input field `Input.arg` changed type from [String] to String", change.message
+        assert_equal "Input field `Input.arg` changed type from `[String]` to `String`", change.message
       end
     end
 
@@ -68,7 +68,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         refute change.breaking?
 
-        assert_equal "Input field `Input.arg` changed type from String! to String", change.message
+        assert_equal "Input field `Input.arg` changed type from `String!` to `String`", change.message
       end
     end
 
@@ -87,7 +87,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
       it "is a breaking change" do
         assert change.breaking?
         assert_equal 1, changes.size
-        assert_equal "Input field `Input.arg` changed type from String to String!", change.message
+        assert_equal "Input field `Input.arg` changed type from `String` to `String!`", change.message
       end
     end
 
@@ -107,7 +107,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         refute change.breaking?
 
-        assert_equal "Input field `Input.arg` changed type from [String]! to [String]", change.message
+        assert_equal "Input field `Input.arg` changed type from `[String]!` to `[String]`", change.message
       end
     end
 
@@ -127,7 +127,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         refute change.breaking?
 
-        assert_equal "Input field `Input.arg` changed type from [String!]! to [String]!", change.message
+        assert_equal "Input field `Input.arg` changed type from `[String!]!` to `[String]!`", change.message
       end
     end
 
@@ -147,7 +147,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         refute change.breaking?
 
-        assert_equal "Input field `Input.arg` changed type from [String!]! to [String]", change.message
+        assert_equal "Input field `Input.arg` changed type from `[String!]!` to `[String]`", change.message
       end
     end
 
@@ -167,7 +167,7 @@ describe GraphQL::SchemaComparator::Diff::InputField do
         assert_equal 1, changes.size
         assert change.breaking?
 
-        assert_equal "Input field `Input.arg` changed type from [String!]! to [Boolean]", change.message
+        assert_equal "Input field `Input.arg` changed type from `[String!]!` to `[Boolean]`", change.message
       end
     end
   end

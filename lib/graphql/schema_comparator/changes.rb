@@ -834,7 +834,7 @@ module GraphQL
         end
 
         def message
-          "Input field `#{input_type}.#{old_input_field.name}` changed type from #{old_input_field.type} to #{new_input_field.type}"
+          "Input field `#{input_type}.#{old_input_field.name}` changed type from `#{old_input_field.type}` to `#{new_input_field.type}`"
         end
 
         def breaking?
