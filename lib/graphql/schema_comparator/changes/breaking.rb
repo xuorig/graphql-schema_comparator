@@ -219,13 +219,14 @@ module GraphQL
       end
 
       class FieldTypeChanged < AbstractChange
-        attr_reader :type, :old_field, :new_field, :criticality
+        include SafeTypeChange
+
+        attr_reader :type, :old_field, :new_field
 
         def initialize(type, old_field, new_field)
           @type = type
           @old_field = old_field
           @new_field = new_field
-          @criticality = Changes::Criticality.breaking
         end
 
         def message
@@ -234,6 +235,14 @@ module GraphQL
 
         def breaking?
           criticality.breaking?
+        end
+
+        def criticality
+          if safe_change_for_field?(old_field.type, new_field.type)
+            Changes::Criticality.non_breaking
+          else
+            Changes::Criticality.breaking
+          end
         end
       end
 

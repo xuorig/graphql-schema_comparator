@@ -576,7 +576,7 @@ module GraphQL
           @input_type = input_type
           @old_input_field = old_input_field
           @new_input_field = new_input_field
-          @breaking = !safe_change?(old_input_field.type, new_input_field.type)
+          @breaking = !safe_change_for_input_value?(old_input_field.type, new_input_field.type)
         end
 
         def message
@@ -598,7 +598,7 @@ module GraphQL
           @field = field
           @old_argument = old_argument
           @new_argument = new_argument
-          @breaking = !safe_change?(old_argument.type, new_argument.type)
+          @breaking = !safe_change_for_input_value?(old_argument.type, new_argument.type)
         end
 
         def message
