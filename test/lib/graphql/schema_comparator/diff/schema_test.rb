@@ -136,7 +136,7 @@ describe GraphQL::SchemaComparator::Diff::Schema do
         "Input field `c` was added to input object type `AInput`",
         "Input field `AInput.a` description changed from `a` to `changed`",
         "Input field `AInput.a` default changed from `1` to `1`",
-        "Input field `AInput.a` changed type from String to Int",
+        "Input field `AInput.a` changed type from `String` to `Int`",
         "`CType` object implements `AnInterface` interface",
         "Field `c` was removed from object type `CType`",
         "Field `b` was added to object type `CType`",
