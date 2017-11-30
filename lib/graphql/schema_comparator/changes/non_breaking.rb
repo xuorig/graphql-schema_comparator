@@ -53,24 +53,6 @@ module GraphQL
         end
       end
 
-      class EnumValueAdded < AbstractChange
-        attr_reader :enum_type, :enum_value, :criticality
-
-        def initialize(enum_type, enum_value)
-          @enum_type = enum_type
-          @enum_value = enum_value
-          @breaking = false
-        end
-
-        def message
-          "Enum value `#{enum_value.name}` was added to enum `#{enum_type.name}`"
-        end
-
-        def breaking?
-          !!@breaking
-        end
-      end
-
       class EnumValueDescriptionChanged < AbstractChange
         attr_reader :enum, :old_enum_value, :new_enum_value, :criticality
 
@@ -111,24 +93,6 @@ module GraphQL
 
         def breaking?
           false
-        end
-      end
-
-      class UnionMemberAdded < AbstractChange
-        attr_reader :union_type, :union_member, :criticality
-
-        def initialize(union_type, union_member)
-          @union_member = union_member
-          @union_type = union_type
-          @breaking = false
-        end
-
-        def message
-          "Union member `#{union_member.name}` was added to Union type `#{union_type.name}`"
-        end
-
-        def breaking?
-          !!@breaking
         end
       end
 
@@ -265,27 +229,6 @@ module GraphQL
         def message
           "Input field `#{input_type.name}.#{old_field.name}` default changed"\
             " from `#{old_field.default_value}` to `#{new_field.default_value}`"
-        end
-
-        def breaking?
-          !!@breaking
-        end
-      end
-
-      class FieldArgumentDefaultChanged < AbstractChange
-        attr_reader :type, :field, :old_argument, :new_argument, :criticality
-
-        def initialize(type, field, old_argument, new_argument)
-          @type = type
-          @field = field
-          @old_argument = old_argument
-          @new_argument = new_argument
-          @breaking = false
-        end
-
-        def message
-          "Default value for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
-            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
         end
 
         def breaking?
