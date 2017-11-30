@@ -2,7 +2,7 @@ module GraphQL
   module SchemaComparator
     module Changes
       class TypeAdded < AbstractChange
-        attr_reader :type
+        attr_reader :type, :criticality
 
         def initialize(type)
           @type = type
@@ -19,7 +19,7 @@ module GraphQL
       end
 
       class DirectiveAdded < AbstractChange
-        attr_reader :directive
+        attr_reader :directive, :criticality
 
         def initialize(directive)
           @directive = directive
@@ -36,7 +36,7 @@ module GraphQL
       end
 
       class TypeDescriptionChanged < AbstractChange
-        attr_reader :old_type, :new_type
+        attr_reader :old_type, :new_type, :criticality
 
         def initialize(old_type, new_type)
           @old_type = old_type
@@ -54,7 +54,7 @@ module GraphQL
       end
 
       class EnumValueAdded < AbstractChange
-        attr_reader :enum_type, :enum_value
+        attr_reader :enum_type, :enum_value, :criticality
 
         def initialize(enum_type, enum_value)
           @enum_type = enum_type
@@ -72,7 +72,7 @@ module GraphQL
       end
 
       class EnumValueDescriptionChanged < AbstractChange
-        attr_reader :enum, :old_enum_value, :new_enum_value
+        attr_reader :enum, :old_enum_value, :new_enum_value, :criticality
 
         def initialize(enum, old_enum_value, new_enum_value)
           @enum = enum
@@ -91,7 +91,7 @@ module GraphQL
       end
 
       class EnumValueDeprecated < AbstractChange
-        attr_reader :enum, :old_enum_value, :new_enum_value
+        attr_reader :enum, :old_enum_value, :new_enum_value, :criticality
 
         def initialize(enum, old_enum_value, new_enum_value)
           @enum = enum
@@ -115,7 +115,7 @@ module GraphQL
       end
 
       class UnionMemberAdded < AbstractChange
-        attr_reader :union_type, :union_member
+        attr_reader :union_type, :union_member, :criticality
 
         def initialize(union_type, union_member)
           @union_member = union_member
@@ -133,7 +133,7 @@ module GraphQL
       end
 
       class InputFieldDescriptionChanged < AbstractChange
-        attr_reader :input_type, :old_field, :new_field
+        attr_reader :input_type, :old_field, :new_field, :criticality
 
         def initialize(input_type, old_field, new_field)
           @input_type = input_type
@@ -153,7 +153,7 @@ module GraphQL
       end
 
       class DirectiveDescriptionChanged < AbstractChange
-        attr_reader :old_directive, :new_directive
+        attr_reader :old_directive, :new_directive, :criticality
 
         def initialize(old_directive, new_directive)
           @old_directive = old_directive
@@ -172,7 +172,7 @@ module GraphQL
       end
 
       class FieldDescriptionChanged < AbstractChange
-        attr_reader :type, :old_field, :new_field
+        attr_reader :type, :old_field, :new_field, :criticality
 
         def initialize(type, old_field, new_field)
           @type = type
@@ -192,7 +192,7 @@ module GraphQL
       end
 
       class FieldArgumentDescriptionChanged < AbstractChange
-        attr_reader :type, :field, :old_argument, :new_argument
+        attr_reader :type, :field, :old_argument, :new_argument, :criticality
 
         def initialize(type, field, old_argument, new_argument)
           @type = type
@@ -213,7 +213,7 @@ module GraphQL
       end
 
       class DirectiveArgumentDescriptionChanged < AbstractChange
-        attr_reader :directive, :old_argument, :new_argument
+        attr_reader :directive, :old_argument, :new_argument, :criticality
 
         def initialize(directive, old_argument, new_argument)
           @directive = directive
@@ -233,7 +233,7 @@ module GraphQL
       end
 
       class FieldDeprecationChanged < AbstractChange
-        attr_reader :type, :old_field, :new_field
+        attr_reader :type, :old_field, :new_field, :criticality
 
         def initialize(type, old_field, new_field)
           @type = type
@@ -253,7 +253,7 @@ module GraphQL
       end
 
       class InputFieldDefaultChanged < AbstractChange
-        attr_reader :input_type, :old_field, :new_field
+        attr_reader :input_type, :old_field, :new_field, :criticality
 
         def initialize(input_type, old_field, new_field)
           @input_type = input_type
@@ -273,7 +273,7 @@ module GraphQL
       end
 
       class FieldArgumentDefaultChanged < AbstractChange
-        attr_reader :type, :field, :old_argument, :new_argument
+        attr_reader :type, :field, :old_argument, :new_argument, :criticality
 
         def initialize(type, field, old_argument, new_argument)
           @type = type
@@ -294,7 +294,7 @@ module GraphQL
       end
 
       class DirectiveArgumentDefaultChanged < AbstractChange
-        attr_reader :directive, :old_argument, :new_argument
+        attr_reader :directive, :old_argument, :new_argument, :criticality
 
         def initialize(directive, old_argument, new_argument)
           @directive = directive
@@ -314,7 +314,7 @@ module GraphQL
       end
 
       class ObjectTypeInterfaceAdded < AbstractChange
-        attr_reader :interface, :object_type
+        attr_reader :interface, :object_type, :criticality
 
         def initialize(interface, object_type)
           @interface = interface
@@ -332,7 +332,7 @@ module GraphQL
       end
 
       class FieldAdded < AbstractChange
-        attr_reader :object_type, :field
+        attr_reader :object_type, :field, :criticality
 
         def initialize(object_type, field)
           @object_type = object_type
@@ -350,7 +350,7 @@ module GraphQL
       end
 
       class DirectiveLocationAdded < AbstractChange
-        attr_reader :directive, :location
+        attr_reader :directive, :location, :criticality
 
         def initialize(directive, location)
           @directive = directive
@@ -512,7 +512,7 @@ module GraphQL
       end
 
       class InputFieldAdded < AbstractChange
-        attr_reader :input_object_type, :field
+        attr_reader :input_object_type, :field, :criticality
 
         def initialize(input_object_type, field)
           @input_object_type = input_object_type
@@ -530,7 +530,7 @@ module GraphQL
       end
 
       class FieldArgumentAdded < AbstractChange
-        attr_reader :type, :field, :argument
+        attr_reader :type, :field, :argument, :criticality
 
         def initialize(type, field, argument)
           @type = type
@@ -550,7 +550,7 @@ module GraphQL
       end
 
       class DirectiveArgumentAdded < AbstractChange
-        attr_reader :directive, :argument
+        attr_reader :directive, :argument, :criticality
 
         def initialize(directive, argument)
           @directive = directive
@@ -570,7 +570,7 @@ module GraphQL
       class InputFieldTypeChanged < AbstractChange
         include SafeTypeChange
 
-        attr_reader :input_type, :old_input_field, :new_input_field
+        attr_reader :input_type, :old_input_field, :new_input_field, :criticality
 
         def initialize(input_type, old_input_field, new_input_field)
           @input_type = input_type
@@ -591,7 +591,7 @@ module GraphQL
       class FieldArgumentTypeChanged < AbstractChange
         include SafeTypeChange
 
-        attr_reader :type, :field, :old_argument, :new_argument
+        attr_reader :type, :field, :old_argument, :new_argument, :criticality
 
         def initialize(type, field, old_argument, new_argument)
           @type = type
@@ -612,7 +612,7 @@ module GraphQL
       end
 
       class DirectiveArgumentTypeChanged < AbstractChange
-        attr_reader :directive, :old_argument, :new_argument
+        attr_reader :directive, :old_argument, :new_argument, :criticality
 
         def initialize(directive, old_argument, new_argument)
           @directive = directive
