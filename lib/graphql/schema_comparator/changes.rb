@@ -4,23 +4,30 @@ require 'graphql/schema_comparator/changes/safe_type_change'
 module GraphQL
   module SchemaComparator
     module Changes
+      # Base class for change objects
       class AbstractChange
+        # A message describing the change that happened between the two version
+        # @return [String] The change message
         def message
           raise NotImplementedError
         end
 
+      # @return [Boolean] If the change is breaking or not
         def breaking?
           criticality.breaking?
         end
 
+        # @return [Boolean] If the change is dangerous or not
         def dangerous?
           criticality.dangerous?
         end
 
+        # @return [Boolean] If the change is non breaking
         def non_breaking?
           criticality.non_breaking?
         end
 
+        # @return [GraphQL::SchemaComparator::Changes::Criticality] The criticality of this change
         def criticality
           raise NotImplementedError
         end
