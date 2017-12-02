@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "bin"
-  spec.executables   = ["graphql-schema, schema_comparator"]
+  spec.executables   = ["graphql-schema", "schema_comparator"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "graphql", "~> 1.6"
