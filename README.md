@@ -58,6 +58,10 @@ Detected the following changes between schemas:
 
 `GraphQL::SchemaComparator`, provides a simple api for Ruby applications to use.
 
+## Docs
+
+http://www.rubydoc.info/github/xuorig/graphql-schema_comparator/master/GraphQL/SchemaComparator
+
 ### GraphQL::SchemaComparator.compare
 
 The compare method takes two arguments, `old_schema` and `new_schema`, the two schemas to compare.
