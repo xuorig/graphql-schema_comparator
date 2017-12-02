@@ -8,12 +8,10 @@ class GraphQLSchema < Thor
   desc "compare OLD_SCHEMA NEW_SCHEMA", "Compares OLD_SCHEMA with NEW_SCHEMA and returns a list of changes"
 
   def compare(old_schema, new_schema)
-    say "[Warning] graphql-schema is deprecated. Please use `schema_comparator` instead", :yellow
-
     parsed_old = parse_schema(old_schema)
     parsed_new = parse_schema(new_schema)
 
-    say "🤖  Checking for changes..."
+    say "⏳  Checking for changes..."
     result = GraphQL::SchemaComparator.compare(parsed_old, parsed_new)
 
     say "🎉  Done! Result:"
@@ -34,6 +32,8 @@ class GraphQLSchema < Thor
 
     result.changes.each do |change|
       if change.breaking?
+        say "🛑  #{change.message}", :red
+      elsif change.dangerous?
         say "⚠️  #{change.message}", :yellow
       else
         say "✅  #{change.message}", :green
