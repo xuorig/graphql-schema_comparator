@@ -322,6 +322,8 @@ module GraphQL
         end
       end
 
+      # Dangerous Changes
+
       class FieldArgumentDefaultChanged < AbstractChange
         attr_reader :type, :field, :old_argument, :new_argument, :criticality
 
@@ -342,7 +344,43 @@ module GraphQL
         end
       end
 
-      # Dangerous Changes
+      class InputFieldDefaultChanged < AbstractChange
+        attr_reader :input_type, :old_field, :new_field, :criticality
+
+        def initialize(input_type, old_field, new_field)
+          @criticality = Changes::Criticality.dangerous(
+            reason: "Changing the default value for an argument may change the runtime " \
+              "behaviour of a field if it was never provided."
+          )
+          @input_type = input_type
+          @old_field = old_field
+          @new_field = new_field
+        end
+
+        def message
+          "Input field `#{input_type.name}.#{old_field.name}` default changed"\
+            " from `#{old_field.default_value}` to `#{new_field.default_value}`"
+        end
+      end
+
+      class DirectiveArgumentDefaultChanged < AbstractChange
+        attr_reader :directive, :old_argument, :new_argument, :criticality
+
+        def initialize(directive, old_argument, new_argument)
+          @criticality = Changes::Criticality.dangerous(
+            reason: "Changing the default value for an argument may change the runtime " \
+              "behaviour of a field if it was never provided."
+          )
+          @directive = directive
+          @old_argument = old_argument
+          @new_argument = new_argument
+        end
+
+        def message
+          "Default value for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
+            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
+        end
+      end
 
       class EnumValueAdded < AbstractChange
         attr_reader :enum_type, :enum_value, :criticality
@@ -375,6 +413,23 @@ module GraphQL
 
         def message
           "Union member `#{union_member.name}` was added to Union type `#{union_type.name}`"
+        end
+      end
+
+      class ObjectTypeInterfaceAdded < AbstractChange
+        attr_reader :interface, :object_type, :criticality
+
+        def initialize(interface, object_type)
+          @criticality = Changes::Criticality.dangerous(
+            reason: "Adding an interface to an object type may break existing clients " \
+              "that were not programming defensively against a new possible type."
+          )
+          @interface = interface
+          @object_type = object_type
+        end
+
+        def message
+          "`#{object_type.name}` object implements `#{interface.name}` interface"
         end
       end
 
@@ -589,52 +644,6 @@ module GraphQL
         def message
           "Deprecation reason on field `#{type.name}.#{new_field.name}` has changed "\
             "from `#{old_field.deprecation_reason}` to `#{new_field.deprecation_reason}`"
-        end
-      end
-
-      class InputFieldDefaultChanged < AbstractChange
-        attr_reader :input_type, :old_field, :new_field, :criticality
-
-        def initialize(input_type, old_field, new_field)
-          @criticality = Changes::Criticality.non_breaking
-          @input_type = input_type
-          @old_field = old_field
-          @new_field = new_field
-        end
-
-        def message
-          "Input field `#{input_type.name}.#{old_field.name}` default changed"\
-            " from `#{old_field.default_value}` to `#{new_field.default_value}`"
-        end
-      end
-
-      class DirectiveArgumentDefaultChanged < AbstractChange
-        attr_reader :directive, :old_argument, :new_argument, :criticality
-
-        def initialize(directive, old_argument, new_argument)
-          @criticality = Changes::Criticality.non_breaking
-          @directive = directive
-          @old_argument = old_argument
-          @new_argument = new_argument
-        end
-
-        def message
-          "Default value for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
-            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
-        end
-      end
-
-      class ObjectTypeInterfaceAdded < AbstractChange
-        attr_reader :interface, :object_type, :criticality
-
-        def initialize(interface, object_type)
-          @criticality = Changes::Criticality.non_breaking
-          @interface = interface
-          @object_type = object_type
-        end
-
-        def message
-          "`#{object_type.name}` object implements `#{interface.name}` interface"
         end
       end
 
