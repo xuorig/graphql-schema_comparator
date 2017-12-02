@@ -9,10 +9,6 @@ module GraphQL
           @criticality = Changes::Criticality.breaking
         end
 
-        def breaking?
-          criticality.breaking?
-        end
-
         def message
           "`#{removed_type.name}` was removed"
         end
@@ -23,16 +19,11 @@ module GraphQL
 
         def initialize(directive)
           @directive = directive
-          @breaking = true
           @criticality = Changes::Criticality.breaking
         end
 
         def message
           "`#{directive.name}` was removed"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
 
@@ -42,16 +33,11 @@ module GraphQL
         def initialize(old_type, new_type)
           @old_type = old_type
           @new_type = new_type
-          @breaking = true
           @criticality = Changes::Criticality.breaking
         end
 
         def message
           "`#{old_type.name}` kind changed from `#{old_type.kind}` to `#{new_type.kind}`"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
 
@@ -67,10 +53,6 @@ module GraphQL
         def message
           "Enum value `#{enum_value.name}` was removed from enum `#{enum_type.name}`"
         end
-
-        def breaking?
-          criticality.breaking?
-        end
       end
 
       class UnionMemberRemoved < AbstractChange
@@ -85,10 +67,6 @@ module GraphQL
         def message
           "Union member `#{union_member.name}` was removed from Union type `#{union_type.name}`"
         end
-
-        def breaking?
-          criticality.breaking?
-        end
       end
 
       class InputFieldRemoved < AbstractChange
@@ -102,10 +80,6 @@ module GraphQL
 
         def message
           "Input field `#{field.name}` was removed from input object type `#{input_object_type.name}`"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
 
@@ -122,10 +96,6 @@ module GraphQL
         def message
           "Argument `#{argument.name}: #{argument.type}` was removed from field `#{object_type.name}.#{field.name}`"
         end
-
-        def breaking?
-          criticality.breaking?
-        end
       end
 
       class DirectiveArgumentRemoved < AbstractChange
@@ -139,10 +109,6 @@ module GraphQL
 
         def message
           "Argument `#{argument.name}` was removed from directive `#{directive.name}`"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
 
@@ -158,10 +124,6 @@ module GraphQL
         def message
           "Schema query root has changed from `#{old_schema.query.name}` to `#{new_schema.query.name}`"
         end
-
-        def breaking?
-          criticality.breaking?
-        end
       end
 
       class FieldRemoved < AbstractChange
@@ -175,10 +137,6 @@ module GraphQL
 
         def message
           "Field `#{field.name}` was removed from object type `#{object_type.name}`"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
 
@@ -194,10 +152,6 @@ module GraphQL
         def message
           "Location `#{location}` was removed from directive `#{directive.name}`"
         end
-
-        def breaking?
-          criticality.breaking?
-        end
       end
 
       class ObjectTypeInterfaceRemoved < AbstractChange
@@ -211,10 +165,6 @@ module GraphQL
 
         def message
           "`#{object_type.name}` object type no longer implements `#{interface.name}` interface"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
 
@@ -233,16 +183,87 @@ module GraphQL
           "Field `#{type}.#{old_field.name}` changed type from `#{old_field.type}` to `#{new_field.type}`"
         end
 
-        def breaking?
-          criticality.breaking?
-        end
-
         def criticality
           if safe_change_for_field?(old_field.type, new_field.type)
             Changes::Criticality.non_breaking
           else
             Changes::Criticality.breaking
           end
+        end
+      end
+
+      class InputFieldTypeChanged < AbstractChange
+        include SafeTypeChange
+
+        attr_reader :input_type, :old_input_field, :new_input_field, :criticality
+
+        def initialize(input_type, old_input_field, new_input_field)
+          if safe_change_for_input_value?(old_input_field.type, new_input_field.type)
+            @criticality = Changes::Criticality.non_breaking(
+              reason: "Changing an input field from non-null to null is considered non-breaking"
+            )
+          else
+            @criticality = Changes::Criticality.breaking
+          end
+
+          @input_type = input_type
+          @old_input_field = old_input_field
+          @new_input_field = new_input_field
+        end
+
+        def message
+          "Input field `#{input_type}.#{old_input_field.name}` changed type from `#{old_input_field.type}` to `#{new_input_field.type}`"
+        end
+      end
+
+      class FieldArgumentTypeChanged < AbstractChange
+        include SafeTypeChange
+
+        attr_reader :type, :field, :old_argument, :new_argument, :criticality
+
+        def initialize(type, field, old_argument, new_argument)
+          if safe_change_for_input_value?(old_argument.type, new_argument.type)
+            @criticality = Changes::Criticality.non_breaking(
+              reason: "Changing an input field from non-null to null is considered non-breaking"
+            )
+          else
+            @criticality = Changes::Criticality.breaking
+          end
+
+          @type = type
+          @field = field
+          @old_argument = old_argument
+          @new_argument = new_argument
+        end
+
+        def message
+          "Type for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
+            " from `#{old_argument.type}` to `#{new_argument.type}`"
+        end
+      end
+
+      class DirectiveArgumentTypeChanged < AbstractChange
+        include SafeTypeChange
+
+        attr_reader :directive, :old_argument, :new_argument, :criticality
+
+        def initialize(directive, old_argument, new_argument)
+          if safe_change_for_input_value?(old_argument.type, new_argument.type)
+            @criticality = Changes::Criticality.non_breaking(
+              reason: "Changing an input field from non-null to null is considered non-breaking"
+            )
+          else
+            @criticality = Changes::Criticality.breaking
+          end
+
+          @directive = directive
+          @old_argument = old_argument
+          @new_argument = new_argument
+        end
+
+        def message
+          "Type for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
+            " from `#{old_argument.type}` to `#{new_argument.type}`"
         end
       end
 
@@ -258,10 +279,6 @@ module GraphQL
         def message
           "Schema mutation root has changed from `#{old_schema.mutation}` to `#{new_schema.mutation}`"
         end
-
-        def breaking?
-          criticality.breaking?
-        end
       end
 
       class SchemaSubscriptionTypeChanged < AbstractChange
@@ -275,10 +292,6 @@ module GraphQL
 
         def message
           "Schema subscription type has changed from `#{old_schema.subscription}` to `#{new_schema.subscription}`"
-        end
-
-        def breaking?
-          criticality.breaking?
         end
       end
     end

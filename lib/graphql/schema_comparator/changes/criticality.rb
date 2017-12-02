@@ -35,6 +35,18 @@ module GraphQL
           @level = level
           @reason = reason
         end
+
+        def breaking?
+          @level == BREAKING
+        end
+
+        def non_breaking?
+          @level == NON_BREAKING
+        end
+
+        def dangerous?
+          @level == DANGEROUS
+        end
       end
     end
   end

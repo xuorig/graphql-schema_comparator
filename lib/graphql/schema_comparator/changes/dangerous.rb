@@ -19,10 +19,6 @@ module GraphQL
           "Default value for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
             " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
         end
-
-        def breaking?
-          !!@breaking
-        end
       end
 
       class EnumValueAdded < AbstractChange
@@ -39,10 +35,6 @@ module GraphQL
 
         def message
           "Enum value `#{enum_value.name}` was added to enum `#{enum_type.name}`"
-        end
-
-        def breaking?
-          !!@breaking
         end
       end
 
@@ -61,9 +53,34 @@ module GraphQL
         def message
           "Union member `#{union_member.name}` was added to Union type `#{union_type.name}`"
         end
+      end
 
-        def breaking?
-          !!@breaking
+      class InputFieldAdded < AbstractChange
+        attr_reader :input_object_type, :field, :criticality
+
+        def initialize(input_object_type, field)
+          @criticality = Changes::Criticality.non_breaking
+          @input_object_type = input_object_type
+          @field = field
+        end
+
+        def message
+          "Input field `#{field.name}` was added to input object type `#{input_object_type.name}`"
+        end
+      end
+
+      class FieldArgumentAdded < AbstractChange
+        attr_reader :type, :field, :argument, :criticality
+
+        def initialize(type, field, argument)
+          @criticality = Changes::Criticality.non_breaking
+          @type = type
+          @field = field
+          @argument = argument
+        end
+
+        def message
+          "Argument `#{argument.name}: #{argument.type}` added to field `#{type.name}.#{field.name}`"
         end
       end
     end
