@@ -6,7 +6,7 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
     removed_a = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.define(name: "A"), GraphQL::Field.define(name: "a"))
     added_a = GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.define(name: "A"), GraphQL::Field.define(name: "a"))
     result = GraphQL::SchemaComparator::Result.new([removed_z, added_a, removed_a])
-    assert_equal [removed_z, removed_a, added_a], result.changes
+    assert_equal [removed_a, removed_z, added_a], result.changes
   end
 
   def test_identical_returns_false_when_schemas_have_changes
@@ -80,6 +80,6 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
       type_description_changed
     ])
 
-    assert_equal [field_added, type_description_changed], result.non_breaking_changes
+    assert_equal [type_description_changed, field_added], result.non_breaking_changes
   end
 end

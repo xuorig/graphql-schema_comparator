@@ -6,17 +6,17 @@ module GraphQL
         # Non-breaking criticality usually defines changes that are always
         # safe to make to a GraphQL Schema. They do not
         # require any changes on the client side
-        NON_BREAKING = :NON_BREAKING
+        NON_BREAKING = 1
 
         # Dangerous criticality defines changes that are not breaking
         # the schema, but may break runtime logic on clients
         # if they did not code defensively enough to prevent
         # these changes.
-        DANGEROUS = :DANGEROUS
+        DANGEROUS = 2
 
         # Breaking criticality are changes that immediatly impact
         # clients usually causing queries not to be valid anymore.
-        BREAKING = :BREAKING
+        BREAKING = 3
 
         attr_reader :level, :reason
 
@@ -59,6 +59,16 @@ module GraphQL
         def initialize(level: NON_BREAKING, reason: nil)
           @level = level
           @reason = reason
+        end
+
+        def <=>(other)
+          if level == other.level
+            0
+          elsif level < other.level
+            -1
+          else
+            1
+          end
         end
 
         def breaking?
