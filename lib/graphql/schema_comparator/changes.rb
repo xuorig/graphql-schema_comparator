@@ -446,7 +446,7 @@ module GraphQL
         attr_reader :input_object_type, :field, :criticality
 
         def initialize(input_object_type, field)
-          if field.type.non_null?
+          @criticality = if field.type.non_null?
             Changes::Criticality.breaking
           else
             Changes::Criticality.non_breaking
@@ -465,7 +465,7 @@ module GraphQL
         attr_reader :type, :field, :argument, :criticality
 
         def initialize(type, field, argument)
-          if argument.type.non_null?
+          @criticality = if argument.type.non_null?
             Changes::Criticality.breaking
           else
             Changes::Criticality.non_breaking
@@ -831,7 +831,11 @@ module GraphQL
         attr_reader :directive, :argument, :criticality
 
         def initialize(directive, argument)
-          @criticality = Changes::Criticality.non_breaking
+          @criticality = if argument.type.non_null?
+            Changes::Criticality.breaking
+          else
+            Changes::Criticality.non_breaking
+          end
           @directive = directive
           @argument = argument
         end
