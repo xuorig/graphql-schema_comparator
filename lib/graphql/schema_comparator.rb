@@ -19,6 +19,11 @@ require "graphql/schema_comparator/diff/union"
 
 module GraphQL
   module SchemaComparator
+    # Compares and returns changes for two versions of a schema
+    #
+    # @param old_schema [GraphQL::Schema, String]
+    # @param new_schema [GraphQL::Schema, String]
+    # @return [GraphQL::SchemaComparator::Result] the result of the comparison
     def self.compare(old_schema, new_schema)
       parsed_old = parse_schema(old_schema)
       parsed_new = parse_schema(new_schema)
