@@ -1,8 +1,9 @@
 require "graphql"
 
 require "graphql/schema_comparator/version"
-require "graphql/schema_comparator/changes"
 require "graphql/schema_comparator/result"
+
+require 'graphql/schema_comparator/changes'
 
 require "graphql/schema_comparator/diff/schema"
 require "graphql/schema_comparator/diff/argument"

@@ -1,7 +1,7 @@
 require "test_helper"
 
-describe GraphQL::SchemaComparator::VERSION do
-  it "has a version" do
+class GraphQL::SchemaComparator::VersionTest < Minitest::Test
+  def test_has_version
     assert GraphQL::SchemaComparator::VERSION != nil
   end
 end
