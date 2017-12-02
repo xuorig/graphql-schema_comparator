@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.5.0 (Dec 2 2017)
+
+## New Features
+
+  - `AbstractChange#criticality` now returns a criticality object which
+  has a level (non_breaking, dangerous, breaking) and a reason
+
+  - Schema::ComparatorResult maintains a list of `#dangerous_changes`
+
+  - New Methods: Change.non_breaking? Change.dangerous?
+
+  - New CLI `schema_comparator` which includes `dangerous_changes`
+
+## Breaking Changes
+
+  - Some changes have been recategorized as dangerous
+  - Some type changes now return breaking or non-breaking depending on the type kind
+
 ## 0.4.0 (Nov 27 2017)
 
 ## Breaking Changes
