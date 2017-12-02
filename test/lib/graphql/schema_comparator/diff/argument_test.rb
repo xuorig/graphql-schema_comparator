@@ -1,183 +1,156 @@
 require "test_helper"
 
-describe GraphQL::SchemaComparator::Diff::Argument do
-  let(:type) do
-    arg = old_argument
-
-    GraphQL::ObjectType.define do
+class GraphQL::SchemaComparator::Diff::ArgumentTest < Minitest::Test
+  def setup
+    @type = GraphQL::ObjectType.define do
       name "Query"
-      field :a do
-        argument arg
-      end
+      field :a, types.String
     end
+
+    @field = @type.fields["a"]
   end
 
-  let(:field) do
-    type.fields["a"]
+  def test_diff_input_field_type_change
+    old_input_field = GraphQL::Argument.define do
+      name "foo"
+      type types.String
+    end
+
+    new_input_field = old_input_field.redefine { type types.Boolean }
+
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
+
+    assert_equal 1, changes.size
+    assert change.breaking?
+
+    assert_equal "Type for argument `foo` on field `Query.a` changed from `String` to `Boolean`", change.message
   end
 
-  let(:differ) { GraphQL::SchemaComparator::Diff::Argument.new(type, field, old_argument, new_argument) }
-  let(:changes) { differ.diff }
-  let(:change) { differ.diff.first }
-
-  describe "#diff" do
-    describe "argument type change" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type types.String
-        end
-      end
-
-      let(:new_argument) do
-        old_argument.redefine { type types.Boolean }
-      end
-
-      it "is a breaking change" do
-        assert_equal 1, changes.size
-        assert change.breaking?
-
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `String` to `Boolean`", change.message
-      end
+  def test_diff_input_field_type_change_from_scalar_to_list_of_the_same_type
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type types[types.String]
     end
 
-    describe "argument type change from scalar to list of the same type" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type types[types.String]
-        end
-      end
+    new_input_field = old_input_field.redefine { type types.String }
 
-      let(:new_argument) do
-        old_argument.redefine { type types.String }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a non-breaking change" do
-        assert_equal 1, changes.size
-        assert change.breaking?
+    assert_equal 1, changes.size
+    assert change.breaking?
 
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `[String]` to `String`", change.message
-      end
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `[String]` to `String`", change.message
+  end
+
+  def test_diff_input_field_type_change_from_non_null_to_null_same_type
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type !types.String
     end
 
-    describe "argument type change from non-null to null of the same underyling type" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type !types.String
-        end
-      end
+    new_input_field = old_input_field.redefine { type types.String }
 
-      let(:new_argument) do
-        old_argument.redefine { type types.String }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a non-breaking change" do
-        assert_equal 1, changes.size
-        refute change.breaking?
+    assert_equal 1, changes.size
+    refute change.breaking?
 
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `String!` to `String`", change.message
-      end
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `String!` to `String`", change.message
+  end
+
+  def test_diff_input_field_type_change_from_null_to_non_null_of_same_type
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type types.String
     end
 
-    describe "argument type change from null to non-null of the same underyling type" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type types.String
-        end
-      end
+    new_input_field = old_input_field.redefine { type !types.String }
 
-      let(:new_argument) do
-        old_argument.redefine { type !types.String }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a breaking change" do
-        assert change.breaking?
-        assert_equal 1, changes.size
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `String` to `String!`", change.message
-      end
+    assert_equal 1, changes.size
+    assert change.breaking?
+
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `String` to `String!`", change.message
+  end
+
+  def test_diff_input_field_type_nullability_change_on_lists_of_the_same_underlying_types
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type !types[types.String]
     end
 
-    describe "argument type nullability change on lists of the same underlying types" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type !types[types.String]
-        end
-      end
+    new_input_field = old_input_field.redefine { type types[types.String] }
 
-      let(:new_argument) do
-        old_argument.redefine { type types[types.String] }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a non-breaking chnage" do
-        assert_equal 1, changes.size
-        refute change.breaking?
+    assert_equal 1, changes.size
+    refute change.breaking?
 
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `[String]!` to `[String]`", change.message
-      end
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `[String]!` to `[String]`", change.message
+  end
+
+  def test_diff_input_field_type_change_within_lists_of_the_same_underyling_types
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type !types[!types.String]
     end
 
-    describe "argument type change within lists of the same underyling types" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type !types[!types.String]
-        end
-      end
+    new_input_field = old_input_field.redefine { type !types[types.String] }
 
-      let(:new_argument) do
-        old_argument.redefine { type !types[types.String] }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a non-breaking change" do
-        assert_equal 1, changes.size
-        refute change.breaking?
+    assert_equal 1, changes.size
+    refute change.breaking?
 
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `[String!]!` to `[String]!`", change.message
-      end
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `[String!]!` to `[String]!`", change.message
+  end
+
+  def test_input_field_type_changes_on_and_within_lists_of_the_same_underlying_types
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type !types[!types.String]
     end
 
-    describe "argument type changes on and within lists of the same underlying types" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type !types[!types.String]
-        end
-      end
+    new_input_field = old_input_field.redefine { type types[types.String] }
 
-      let(:new_argument) do
-        old_argument.redefine { type types[types.String] }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a non-breaking change" do
-        assert_equal 1, changes.size
-        refute change.breaking?
+    assert_equal 1, changes.size
+    refute change.breaking?
 
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `[String!]!` to `[String]`", change.message
-      end
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `[String!]!` to `[String]`", change.message
+  end
+
+  def test_input_field_type_changes_on_and_within_lists_of_different_underlying_types
+    old_input_field = GraphQL::Argument.define do
+      name "arg"
+      type !types[!types.String]
     end
 
-    describe "argument type changes on and within lists of different underlying types" do
-      let(:old_argument) do
-        GraphQL::Argument.define do
-          name "arg"
-          type !types[!types.String]
-        end
-      end
+    new_input_field = old_input_field.redefine { type types[types.Boolean] }
 
-      let(:new_argument) do
-        old_argument.redefine { type types[types.Boolean] }
-      end
+    differ = GraphQL::SchemaComparator::Diff::Argument.new(@type, @field, old_input_field, new_input_field)
+    changes = differ.diff
+    change = differ.diff.first
 
-      it "is a breaking change" do
-        assert_equal 1, changes.size
-        assert change.breaking?
+    assert_equal 1, changes.size
+    assert change.breaking?
 
-        assert_equal "Type for argument `arg` on field `Query.a` changed from `[String!]!` to `[Boolean]`", change.message
-      end
-    end
+    assert_equal "Type for argument `arg` on field `Query.a` changed from `[String!]!` to `[Boolean]`", change.message
   end
 end
