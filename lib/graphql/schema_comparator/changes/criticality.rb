@@ -9,21 +9,21 @@ module GraphQL
         attr_reader :level, :reason
 
         class << self
-          def breaking(reason: "This change is a breaking change.")
+          def breaking(reason: "This change is a breaking change")
             new(
               level: BREAKING,
               reason: reason
             )
           end
 
-          def non_breaking(reason: "This change is safe.")
+          def non_breaking(reason: "This change is safe")
             new(
               level: NON_BREAKING,
               reason: reason
             )
           end
 
-          def dangerous(reason: nil)
+          def dangerous(reason: "This change is dangerous")
             new(
               level: DANGEROUS,
               reason: reason
