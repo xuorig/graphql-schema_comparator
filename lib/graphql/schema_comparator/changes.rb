@@ -346,8 +346,12 @@ module GraphQL
         end
 
         def message
-          "Default value for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
-            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
+          if old_argument.default_value.nil?
+            "Default value `#{new_argument.default_value}` was added to argument `#{new_argument.name}` on field `#{type.name}.#{field.name}`"
+          else
+            "Default value for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
+              " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
+          end
         end
       end
 
