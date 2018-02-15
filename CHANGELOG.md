@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 (Feb 15th 2018)
+
+## Bug Fix
+
+  - Return a better message when adding a default value, if this one was nil before.
+
 ## 0.5.0 (Dec 2 2017)
 
 ## New Features
