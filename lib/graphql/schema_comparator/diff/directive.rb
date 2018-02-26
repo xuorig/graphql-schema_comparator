@@ -49,8 +49,8 @@ module GraphQL
         def each_common_argument(&block)
           intersection = old_arguments.keys & new_arguments.keys
           intersection.each do |common_arg|
-            old_arg = new_directive.arguments[common_arg]
-            new_arg = old_directive.arguments[common_arg]
+            old_arg = old_directive.arguments[common_arg]
+            new_arg = new_directive.arguments[common_arg]
 
             block.call(old_arg, new_arg)
           end
