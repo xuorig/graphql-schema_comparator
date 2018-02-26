@@ -70,7 +70,7 @@ module GraphQL
         end
 
         def path
-          directive.name
+          "@#{directive.name}"
         end
       end
 
