@@ -1,14 +1,20 @@
 # Changelog
 
+## 0.6.0 (Feb 28th 2018)
+
+### New Features
+
+  - Add `#path` which returns a dot-delimited path to the affected schema member. (#15)
+
 ## 0.5.1 (Feb 15th 2018)
 
-## Bug Fix
+### Bug Fix
 
   - Return a better message when adding a default value, if this one was nil before.
 
 ## 0.5.0 (Dec 2 2017)
 
-## New Features
+### New Features
 
   - `AbstractChange#criticality` now returns a criticality object which
   has a level (non_breaking, dangerous, breaking) and a reason
@@ -19,14 +25,14 @@
 
   - New CLI `schema_comparator` which includes `dangerous_changes`
 
-## Breaking Changes
+### Breaking Changes
 
   - Some changes have been recategorized as dangerous
   - Some type changes now return breaking or non-breaking depending on the type kind
 
 ## 0.4.0 (Nov 27 2017)
 
-## Breaking Changes
+### Breaking Changes
 
   - Argument and InputValue type changes are considered non
     breaking if type goes from Null => Non-Null
