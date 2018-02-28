@@ -23,6 +23,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       type CType {
         a: String @deprecated(reason: "whynot")
         c: Int!
+        d(arg: Int): String
       }
       union MyUnion = CType | BType
       interface AnInterface {
@@ -46,12 +47,25 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
         A
         B
         C
+        E
+        F @deprecated(reason: "Old")
       }
 
+      # Old
       directive @yolo(
         # Included when true.
         someArg: Boolean!
+
+        anotherArg: String!
+
+        willBeRemoved: Boolean!
       ) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+      type WillBeRemoved {
+        a: String
+      }
+
+      directive @willBeRemoved on FIELD
     SCHEMA
 
     @new_schema =<<~SCHEMA
@@ -75,6 +89,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       type CType implements AnInterface {
         a(arg: Int): String @deprecated(reason: "cuz")
         b: Int!
+        d(arg: Int = 10): String
       }
       type DType {
         b: Int!
@@ -98,14 +113,20 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
         b(arg: Int = 2): String
       }
       enum Options {
+        # Stuff
         A
         B
         D
+        E @deprecated
+        F @deprecated(reason: "New")
       }
 
+      # New
       directive @yolo(
-        # Included when true.
+        # someArg does stuff
         someArg: String!
+
+        anotherArg: String! = "Test"
       ) on FIELD | FIELD_DEFINITION
 
       directive @yolo2(
@@ -122,6 +143,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
 
   def test_changes_kitchensink
     assert_equal [
+      "Type `WillBeRemoved` was removed",
       "Type `DType` was added",
       "Field `Query.a` description changed from `Just a simple string` to `This description has been changed`",
       "Argument `anArg: String` was removed from field `Query.a`",
@@ -138,6 +160,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Field `b` was added to object type `CType`",
       "Deprecation reason on field `CType.a` has changed from `whynot` to `cuz`",
       "Argument `arg: Int` added to field `CType.a`",
+      "Default value `10` was added to argument `arg` on field `CType.d`",
       "Union member `BType` was removed from Union type `MyUnion`",
       "Union member `DType` was added to Union type `MyUnion`",
       "Field `anotherInterfaceField` was removed from object type `AnotherInterface`",
@@ -148,10 +171,63 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Default value for argument `arg` on field `WithArguments.b` changed from `1` to `2`",
       "Enum value `C` was removed from enum `Options`",
       "Enum value `D` was added to enum `Options`",
-      "Directive `yolo2` was added", "Location `FRAGMENT_SPREAD` was removed from directive `yolo`",
+      "Description for enum value `Options.A` changed from `` to `Stuff`",
+      "Enum value `Options.E` was deprecated with reason `No longer supported`",
+      "Enum value `Options.F` deprecation reason changed from `Old` to `New`",
+      "Directive `willBeRemoved` was removed",
+      "Directive `yolo2` was added",
+      "Directive `yolo` description changed from `Old` to `New`",
+      "Location `FRAGMENT_SPREAD` was removed from directive `yolo`",
       "Location `INLINE_FRAGMENT` was removed from directive `yolo`",
       "Location `FIELD_DEFINITION` was added to directive `yolo`",
-      "Type for argument `someArg` on directive `yolo` changed from `String!` to `Boolean!`"
+      "Argument `willBeRemoved` was removed from directive `yolo`",
+      "Description for argument `someArg` on directive `yolo` changed from `Included when true.` to `someArg does stuff`",
+      "Type for argument `someArg` on directive `yolo` changed from `Boolean!` to `String!`",
+      "Default value for argument `anotherArg` on directive `yolo` changed from `` to `Test`",
     ], @differ.diff.map(&:message)
+
+    assert_equal [
+      "WillBeRemoved",
+      "DType",
+      "Query.a",
+      "Query.a.anArg",
+      "Query.b",
+      "Query",
+      "BType",
+      "AInput.b",
+      "AInput.c",
+      "AInput.a",
+      "AInput.a",
+      "AInput.a",
+      "CType",
+      "CType.c",
+      "CType.b",
+      "CType.a",
+      "CType.a.arg",
+      "CType.d.arg",
+      "MyUnion",
+      "MyUnion",
+      "AnotherInterface.anotherInterfaceField",
+      "AnotherInterface.b",
+      "WithInterfaces",
+      "WithArguments.a.a",
+      "WithArguments.a.b",
+      "WithArguments.b.arg",
+      "Options.C",
+      "Options.D",
+      "Options.A",
+      "Options.E",
+      "Options.F",
+      "@willBeRemoved",
+      "@yolo2",
+      "@yolo",
+      "@yolo",
+      "@yolo",
+      "@yolo",
+      "@yolo.willBeRemoved",
+      "@yolo.someArg",
+      "@yolo.someArg",
+      "@yolo.anotherArg",
+    ], @differ.diff.map(&:path)
   end
 end

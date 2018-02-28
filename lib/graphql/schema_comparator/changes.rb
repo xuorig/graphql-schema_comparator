@@ -12,7 +12,7 @@ module GraphQL
           raise NotImplementedError
         end
 
-      # @return [Boolean] If the change is breaking or not
+        # @return [Boolean] If the change is breaking or not
         def breaking?
           criticality.breaking?
         end
@@ -31,6 +31,11 @@ module GraphQL
         def criticality
           raise NotImplementedError
         end
+
+        # @return [String] Dot-delimited path to the affected schema member.
+        def path
+          raise NotImplementedError
+        end
       end
 
       # Mostly breaking changes
@@ -44,7 +49,11 @@ module GraphQL
         end
 
         def message
-          "`#{removed_type.name}` was removed"
+          "Type `#{removed_type.name}` was removed"
+        end
+
+        def path
+          removed_type.name
         end
       end
 
@@ -57,7 +66,11 @@ module GraphQL
         end
 
         def message
-          "`#{directive.name}` was removed"
+          "Directive `#{directive.name}` was removed"
+        end
+
+        def path
+          "@#{directive.name}"
         end
       end
 
@@ -73,6 +86,10 @@ module GraphQL
         def message
           "`#{old_type.name}` kind changed from `#{old_type.kind}` to `#{new_type.kind}`"
         end
+
+        def path
+          old_type.name
+        end
       end
 
       class EnumValueRemoved < AbstractChange
@@ -86,6 +103,10 @@ module GraphQL
 
         def message
           "Enum value `#{enum_value.name}` was removed from enum `#{enum_type.name}`"
+        end
+
+        def path
+          [enum_type.name, enum_value.name].join('.')
         end
       end
 
@@ -101,6 +122,10 @@ module GraphQL
         def message
           "Union member `#{union_member.name}` was removed from Union type `#{union_type.name}`"
         end
+
+        def path
+          union_type.name
+        end
       end
 
       class InputFieldRemoved < AbstractChange
@@ -114,6 +139,10 @@ module GraphQL
 
         def message
           "Input field `#{field.name}` was removed from input object type `#{input_object_type.name}`"
+        end
+
+        def path
+          [input_object_type.name, field.name].join('.')
         end
       end
 
@@ -130,6 +159,10 @@ module GraphQL
         def message
           "Argument `#{argument.name}: #{argument.type}` was removed from field `#{object_type.name}.#{field.name}`"
         end
+
+        def path
+          [object_type.name, field.name, argument.name].join('.')
+        end
       end
 
       class DirectiveArgumentRemoved < AbstractChange
@@ -143,6 +176,10 @@ module GraphQL
 
         def message
           "Argument `#{argument.name}` was removed from directive `#{directive.name}`"
+        end
+
+        def path
+          ["@#{directive.name}", argument.name].join('.')
         end
       end
 
@@ -158,6 +195,10 @@ module GraphQL
         def message
           "Schema query root has changed from `#{old_schema.query.name}` to `#{new_schema.query.name}`"
         end
+
+        def path
+          # TODO
+        end
       end
 
       class FieldRemoved < AbstractChange
@@ -171,6 +212,10 @@ module GraphQL
 
         def message
           "Field `#{field.name}` was removed from object type `#{object_type.name}`"
+        end
+
+        def path
+          [object_type.name, field.name].join('.')
         end
       end
 
@@ -186,6 +231,10 @@ module GraphQL
         def message
           "Location `#{location}` was removed from directive `#{directive.name}`"
         end
+
+        def path
+          "@#{directive.name}"
+        end
       end
 
       class ObjectTypeInterfaceRemoved < AbstractChange
@@ -199,6 +248,10 @@ module GraphQL
 
         def message
           "`#{object_type.name}` object type no longer implements `#{interface.name}` interface"
+        end
+
+        def path
+          object_type.name
         end
       end
 
@@ -224,6 +277,10 @@ module GraphQL
             Changes::Criticality.breaking
           end
         end
+
+        def path
+          [type.name, old_field.name].join('.')
+        end
       end
 
       class InputFieldTypeChanged < AbstractChange
@@ -247,6 +304,10 @@ module GraphQL
 
         def message
           "Input field `#{input_type}.#{old_input_field.name}` changed type from `#{old_input_field.type}` to `#{new_input_field.type}`"
+        end
+
+        def path
+          [input_type.name, old_input_field.name].join('.')
         end
       end
 
@@ -274,6 +335,10 @@ module GraphQL
           "Type for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
             " from `#{old_argument.type}` to `#{new_argument.type}`"
         end
+
+        def path
+          [type.name, field.name, old_argument.name].join('.')
+        end
       end
 
       class DirectiveArgumentTypeChanged < AbstractChange
@@ -299,6 +364,10 @@ module GraphQL
           "Type for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
             " from `#{old_argument.type}` to `#{new_argument.type}`"
         end
+
+        def path
+          ["@#{directive.name}", old_argument.name].join('.')
+        end
       end
 
       class SchemaMutationTypeChanged < AbstractChange
@@ -313,6 +382,10 @@ module GraphQL
         def message
           "Schema mutation root has changed from `#{old_schema.mutation}` to `#{new_schema.mutation}`"
         end
+
+        def path
+          # TODO
+        end
       end
 
       class SchemaSubscriptionTypeChanged < AbstractChange
@@ -326,6 +399,10 @@ module GraphQL
 
         def message
           "Schema subscription type has changed from `#{old_schema.subscription}` to `#{new_schema.subscription}`"
+        end
+
+        def path
+          # TODO
         end
       end
 
@@ -353,6 +430,10 @@ module GraphQL
               " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
           end
         end
+
+        def path
+          [type.name, field.name, old_argument.name].join('.')
+        end
       end
 
       class InputFieldDefaultChanged < AbstractChange
@@ -371,6 +452,10 @@ module GraphQL
         def message
           "Input field `#{input_type.name}.#{old_field.name}` default changed"\
             " from `#{old_field.default_value}` to `#{new_field.default_value}`"
+        end
+
+        def path
+          [input_type.name, old_field.name].join(".")
         end
       end
 
@@ -391,6 +476,10 @@ module GraphQL
           "Default value for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
             " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
         end
+
+        def path
+          ["@#{directive.name}", new_argument.name].join(".")
+        end
       end
 
       class EnumValueAdded < AbstractChange
@@ -407,6 +496,10 @@ module GraphQL
 
         def message
           "Enum value `#{enum_value.name}` was added to enum `#{enum_type.name}`"
+        end
+
+        def path
+          [enum_type.name, enum_value.name].join(".")
         end
       end
 
@@ -425,6 +518,10 @@ module GraphQL
         def message
           "Union member `#{union_member.name}` was added to Union type `#{union_type.name}`"
         end
+
+        def path
+          union_type.name
+        end
       end
 
       class ObjectTypeInterfaceAdded < AbstractChange
@@ -441,6 +538,10 @@ module GraphQL
 
         def message
           "`#{object_type.name}` object implements `#{interface.name}` interface"
+        end
+
+        def path
+          object_type.name
         end
       end
 
@@ -463,6 +564,10 @@ module GraphQL
         def message
           "Input field `#{field.name}` was added to input object type `#{input_object_type.name}`"
         end
+
+        def path
+          [input_object_type.name, field.name].join(".")
+        end
       end
 
       class FieldArgumentAdded < AbstractChange
@@ -483,6 +588,10 @@ module GraphQL
         def message
           "Argument `#{argument.name}: #{argument.type}` added to field `#{type.name}.#{field.name}`"
         end
+
+        def path
+          [type.name, field.name, argument.name].join(".")
+        end
       end
 
       class TypeAdded < AbstractChange
@@ -495,6 +604,10 @@ module GraphQL
 
         def message
           "Type `#{type.name}` was added"
+        end
+
+        def path
+          type.name
         end
       end
 
@@ -509,6 +622,10 @@ module GraphQL
         def message
           "Directive `#{directive.name}` was added"
         end
+
+        def path
+          "@#{directive.name}"
+        end
       end
 
       class TypeDescriptionChanged < AbstractChange
@@ -522,6 +639,10 @@ module GraphQL
 
         def message
           "Description `#{old_type.description}` on type `#{old_type.name}` has changed to `#{new_type.description}`"
+        end
+
+        def path
+          old_type.name
         end
       end
 
@@ -538,6 +659,10 @@ module GraphQL
         def message
           "Description for enum value `#{enum.name}.#{new_enum_value.name}` changed from " \
             "`#{old_enum_value.description}` to `#{new_enum_value.description}`"
+        end
+
+        def path
+          [enum.name, old_enum_value.name].join(".")
         end
       end
 
@@ -560,6 +685,10 @@ module GraphQL
               " `#{new_enum_value.deprecation_reason}`"
           end
         end
+
+        def path
+          [enum.name, old_enum_value.name].join(".")
+        end
       end
 
       class InputFieldDescriptionChanged < AbstractChange
@@ -576,6 +705,10 @@ module GraphQL
           "Input field `#{input_type.name}.#{old_field.name}` description changed"\
             " from `#{old_field.description}` to `#{new_field.description}`"
         end
+
+        def path
+          [input_type.name, old_field.name].join(".")
+        end
       end
 
       class DirectiveDescriptionChanged < AbstractChange
@@ -590,6 +723,10 @@ module GraphQL
         def message
           "Directive `#{new_directive.name}` description changed"\
             " from `#{old_directive.description}` to `#{new_directive.description}`"
+        end
+
+        def path
+          "@#{old_directive.name}"
         end
       end
 
@@ -606,6 +743,10 @@ module GraphQL
         def message
           "Field `#{type.name}.#{old_field.name}` description changed"\
             " from `#{old_field.description}` to `#{new_field.description}`"
+        end
+
+        def path
+          [type.name, old_field.name].join(".")
         end
       end
 
@@ -624,6 +765,10 @@ module GraphQL
           "Description for argument `#{new_argument.name}` on field `#{type.name}.#{field.name}` changed"\
             " from `#{old_argument.description}` to `#{new_argument.description}`"
         end
+
+        def path
+          [type.name, field.name, old_argument.name].join(".")
+        end
       end
 
       class DirectiveArgumentDescriptionChanged < AbstractChange
@@ -639,6 +784,10 @@ module GraphQL
         def message
           "Description for argument `#{new_argument.name}` on directive `#{directive.name}` changed"\
             " from `#{old_argument.description}` to `#{new_argument.description}`"
+        end
+
+        def path
+          ["@#{directive.name}", old_argument.name].join(".")
         end
       end
 
@@ -656,6 +805,10 @@ module GraphQL
           "Deprecation reason on field `#{type.name}.#{new_field.name}` has changed "\
             "from `#{old_field.deprecation_reason}` to `#{new_field.deprecation_reason}`"
         end
+
+        def path
+          [type.name, old_field.name].join(".")
+        end
       end
 
       class FieldAdded < AbstractChange
@@ -671,6 +824,9 @@ module GraphQL
           "Field `#{field.name}` was added to object type `#{object_type.name}`"
         end
 
+        def path
+          [object_type.name, field.name].join(".")
+        end
       end
 
       class DirectiveLocationAdded < AbstractChange
@@ -684,6 +840,10 @@ module GraphQL
 
         def message
           "Location `#{location}` was added to directive `#{directive.name}`"
+        end
+
+        def path
+          "@#{directive.name}"
         end
       end
 
