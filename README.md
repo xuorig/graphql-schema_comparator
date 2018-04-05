@@ -87,7 +87,7 @@ Possible changes are all found in [changes.rb](lib/graphql/schema_comparator/cha
 
 ### Change Criticality
 
-Each change object has a ``#criticality` method which returns a `Changes::Criticality` object.
+Each change object has a `#criticality` method which returns a `Changes::Criticality` object.
 This objects defines how dangerous a change is to a schema.
 
 The different levels of criticality (non_breaking, dangerous, breaking) are explained here:
