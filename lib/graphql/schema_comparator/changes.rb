@@ -82,7 +82,9 @@ module GraphQL
         def initialize(old_type, new_type)
           @old_type = old_type
           @new_type = new_type
-          @criticality = Changes::Criticality.breaking # TODO - Add reason
+          @criticality = Changes::Criticality.breaking(
+            reason: "Changing the kind of a type is a breaking change because it can cause existing queries to error. For example, turning an object type to a scalar type would break queries that define a selection set for this type."
+          )
         end
 
         def message
