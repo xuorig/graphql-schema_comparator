@@ -45,7 +45,9 @@ module GraphQL
 
         def initialize(removed_type)
           @removed_type = removed_type
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking(
+            reason: "Removing a type is a breaking change. It is preferable to deprecate and remove all references to this type first."
+          )
         end
 
         def message
@@ -80,7 +82,7 @@ module GraphQL
         def initialize(old_type, new_type)
           @old_type = old_type
           @new_type = new_type
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking # TODO - Add reason
         end
 
         def message
@@ -98,7 +100,9 @@ module GraphQL
         def initialize(enum_type, enum_value)
           @enum_value = enum_value
           @enum_type = enum_type
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking(
+            reason: "Removing an enum value will cause existing queries that use this enum value to error."
+          )
         end
 
         def message
@@ -116,7 +120,9 @@ module GraphQL
         def initialize(union_type, union_member)
           @union_member = union_member
           @union_type = union_type
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking(
+            reason: "Removing a union member from a union can cause existing queries that use this union member in a fragment spread to error."
+          )
         end
 
         def message
@@ -134,7 +140,9 @@ module GraphQL
         def initialize(input_object_type, field)
           @input_object_type = input_object_type
           @field = field
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking(
+            reason: "Removing an input field will cause existing queries that use this input field to error."
+          )
         end
 
         def message
@@ -153,7 +161,9 @@ module GraphQL
           @object_type = object_type
           @field = field
           @argument = argument
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking(
+            reason: "Removing a field argument is a breaking change because it will cause existing queries that use this argument to error."
+          )
         end
 
         def message
@@ -207,7 +217,17 @@ module GraphQL
         def initialize(object_type, field)
           @object_type = object_type
           @field = field
-          @criticality = Changes::Criticality.breaking
+
+          if field.deprecation_reason
+            @criticality = Changes::Criticality.breaking(
+              reason: "Removing a deprecated field is a breaking change. Before removing it, you may want" \
+                "to look at the field's usage to see the impact of removing the field."
+            )
+          else
+            @criticality = Changes::Criticality.breaking(
+              reason: "Removing a field is a breaking change. It is preferable to deprecate the field before removing it."
+            )
+          end
         end
 
         def message
@@ -243,7 +263,9 @@ module GraphQL
         def initialize(interface, object_type)
           @interface = interface
           @object_type = object_type
-          @criticality = Changes::Criticality.breaking
+          @criticality = Changes::Criticality.breaking(
+            reason: "Removing an interface from an object type can cause existing queries that use this in a fragment spread to error."
+          )
         end
 
         def message
@@ -274,7 +296,7 @@ module GraphQL
           if safe_change_for_field?(old_field.type, new_field.type)
             Changes::Criticality.non_breaking
           else
-            Changes::Criticality.breaking
+            Changes::Criticality.breaking # TODO - Add reason
           end
         end
 
@@ -294,7 +316,9 @@ module GraphQL
               reason: "Changing an input field from non-null to null is considered non-breaking"
             )
           else
-            @criticality = Changes::Criticality.breaking
+            @criticality = Changes::Criticality.breaking(
+              reason: "Changing the type of an input field can cause existing queries that use this field to error."
+            )
           end
 
           @input_type = input_type
@@ -322,7 +346,9 @@ module GraphQL
               reason: "Changing an input field from non-null to null is considered non-breaking"
             )
           else
-            @criticality = Changes::Criticality.breaking
+            @criticality = Changes::Criticality.breaking(
+              reason: "Changing the type of a field's argument can cause existing queries that use this argument to error."
+            )
           end
 
           @type = type
@@ -552,7 +578,7 @@ module GraphQL
 
         def initialize(input_object_type, field)
           @criticality = if field.type.non_null?
-            Changes::Criticality.breaking
+            Changes::Criticality.breaking(reason: "Adding a non-null field to an existing input type will cause existing queries that use this input type to error because they will not provide a value for this new field.")
           else
             Changes::Criticality.non_breaking
           end
@@ -575,7 +601,7 @@ module GraphQL
 
         def initialize(type, field, argument)
           @criticality = if argument.type.non_null?
-            Changes::Criticality.breaking
+            Changes::Criticality.breaking(reason: "Adding a required argument to an existing field is a breaking change because it will cause existing uses of this field to error.")
           else
             Changes::Criticality.non_breaking
           end
