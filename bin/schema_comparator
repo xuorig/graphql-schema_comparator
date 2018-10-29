@@ -22,6 +22,9 @@ class GraphQLSchema < Thor
     else
       print_changes(result)
     end
+
+    exit_code = result.breaking? ? 1 : 0
+    exit(exit_code)
   end
 
   private
