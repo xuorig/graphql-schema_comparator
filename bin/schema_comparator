@@ -5,9 +5,23 @@ require "thor"
 require "graphql/schema_comparator"
 
 class GraphQLSchema < Thor
+  desc "verify OLD_SCHEMA NEW_SCHEMA", "Behaves exactly like `compare` but returns an exit code for CI purposes"
+
+  def verify(old_schema, new_schema)
+    result = run_compare(old_schema, new_schema)
+    exit_code = result.breaking? ? 1 : 0
+    exit(exit_code)
+  end
+
   desc "compare OLD_SCHEMA NEW_SCHEMA", "Compares OLD_SCHEMA with NEW_SCHEMA and returns a list of changes"
 
   def compare(old_schema, new_schema)
+    run_compare(old_schema, new_schema)
+  end
+
+  private
+
+  def run_compare(old_schema, new_schema)
     parsed_old = parse_schema(old_schema)
     parsed_new = parse_schema(new_schema)
 
@@ -22,9 +36,8 @@ class GraphQLSchema < Thor
     else
       print_changes(result)
     end
+    result
   end
-
-  private
 
   def print_changes(result)
     say "Detected the following changes between schemas:"
