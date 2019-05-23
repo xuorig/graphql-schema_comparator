@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1 (May 21rst 2019)
+
+  - Added a bunch of reasons to breaking changes (#17)
+  - Relaxed Thor Dependency
+  - Add `verify` task for CI usage which returns exit codes depending on breaking changes (#24)
+
 ## 0.6.0 (Feb 28th 2018)
 
 ### New Features
