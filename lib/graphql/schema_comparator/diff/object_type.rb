@@ -3,8 +3,8 @@ module GraphQL
     module Diff
       class ObjectType
         def initialize(old_type, new_type)
-          @old_type = old_type
-          @new_type = new_type
+          @old_type = old_type.graphql_definition
+          @new_type = new_type.graphql_definition
 
           @old_fields = old_type.fields
           @new_fields = new_type.fields
@@ -40,13 +40,17 @@ module GraphQL
         )
 
         def interface_removals
-          removed = old_interfaces.select { |iface| !new_interfaces.include?(iface) }
+          removed = filter_interfaces(old_interfaces, new_interfaces)
           removed.map { |iface| Changes::ObjectTypeInterfaceRemoved.new(iface, old_type) }
         end
 
         def interface_additions
-          added = new_interfaces.select { |iface| !old_interfaces.include?(iface) }
+          added = filter_interfaces(new_interfaces, old_interfaces)
           added.map { |iface| Changes::ObjectTypeInterfaceAdded.new(iface, new_type) }
+        end
+
+        def filter_interfaces(interfaces, excluded_interfaces)
+          interfaces.select { |interface| !excluded_interfaces.map(&:graphql_definition).include?(interface.graphql_definition) }
         end
 
         def field_removals

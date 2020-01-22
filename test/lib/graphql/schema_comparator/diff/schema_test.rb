@@ -157,6 +157,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Input field `AInput.a` changed type from `String` to `Int`",
       "`CType` object implements `AnInterface` interface",
       "Field `c` was removed from object type `CType`",
+      "Field `interfaceField` was added to object type `CType`",
       "Field `b` was added to object type `CType`",
       "Deprecation reason on field `CType.a` has changed from `whynot` to `cuz`",
       "Argument `arg: Int` added to field `CType.a`",
@@ -166,6 +167,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Field `anotherInterfaceField` was removed from object type `AnotherInterface`",
       "Field `b` was added to object type `AnotherInterface`",
       "`WithInterfaces` object type no longer implements `AnotherInterface` interface",
+      "Field `anotherInterfaceField` was removed from object type `WithInterfaces`",
       "Description for argument `a` on field `WithArguments.a` changed from `Meh` to `Description for a`",
       "Type for argument `b` on field `WithArguments.a` changed from `String` to `String!`",
       "Default value for argument `arg` on field `WithArguments.b` changed from `1` to `2`",
@@ -184,7 +186,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Description for argument `someArg` on directive `yolo` changed from `Included when true.` to `someArg does stuff`",
       "Type for argument `someArg` on directive `yolo` changed from `Boolean!` to `String!`",
       "Default value for argument `anotherArg` on directive `yolo` changed from `` to `Test`",
-    ], @differ.diff.map(&:message)
+    ].sort, @differ.diff.map(&:message).sort
 
     assert_equal [
       "WillBeRemoved",
@@ -205,11 +207,13 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "CType.a",
       "CType.a.arg",
       "CType.d.arg",
+      "CType.interfaceField",
       "MyUnion",
       "MyUnion",
       "AnotherInterface.anotherInterfaceField",
       "AnotherInterface.b",
       "WithInterfaces",
+      "WithInterfaces.anotherInterfaceField",
       "WithArguments.a.a",
       "WithArguments.a.b",
       "WithArguments.b.arg",
@@ -228,6 +232,6 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "@yolo.someArg",
       "@yolo.someArg",
       "@yolo.anotherArg",
-    ], @differ.diff.map(&:path)
+    ].sort, @differ.diff.map(&:path).sort
   end
 end
