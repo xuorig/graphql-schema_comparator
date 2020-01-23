@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 (January 23 2020)
+
+### Breaking Changes
+
+  - Add support for graphql-ruby 1.10.0+ (#28)
+  - Starting from 1.0.0 a minimum of graphql-ruby 1.10 is required
+
 ## 0.6.1 (May 21rst 2019)
 
   - Added a bunch of reasons to breaking changes (#17)
