@@ -26,11 +26,15 @@ module GraphQL
         attr_reader :old_type, :new_type, :old_possible_types, :new_possible_types
 
         def removed_possible_types
-          old_possible_types.select { |type| !new_possible_types.include?(type) }
+          filter_types(old_possible_types, new_possible_types)
         end
 
         def added_possible_types
-          new_possible_types.select { |type| !old_possible_types.include?(type) }
+          filter_types(new_possible_types, old_possible_types)
+        end
+
+        def filter_types(types, exclude_types)
+          types.select { |type| !exclude_types.map(&:graphql_definition).include?(type.graphql_definition) }
         end
       end
     end

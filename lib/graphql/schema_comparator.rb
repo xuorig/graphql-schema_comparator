@@ -35,7 +35,7 @@ module GraphQL
     private
 
     def self.parse_schema(schema)
-      if schema.is_a?(GraphQL::Schema)
+      if schema.respond_to?(:ancestors) && schema.ancestors.include?(GraphQL::Schema)
         schema
       elsif schema.is_a?(String)
         GraphQL::Schema.from_definition(schema)

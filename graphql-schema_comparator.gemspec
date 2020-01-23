@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.executables   = ["graphql-schema", "schema_comparator"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "graphql", "~> 1.6"
+  spec.add_dependency "graphql", "~> 1.10"
   spec.add_dependency "thor", ">= 0.19", "< 2.0"
   spec.add_dependency "bundler", ">= 1.14"
 
