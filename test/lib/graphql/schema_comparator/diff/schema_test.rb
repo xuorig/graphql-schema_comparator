@@ -17,6 +17,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
         # Just a simple string
         a(anArg: String): String!
         b: BType
+        c(arg: Options): Options
       }
       type BType {
         a: String
@@ -41,6 +42,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
           # Meh
           a: Int
           b: String
+          option: Options
         ): String
         b(arg: Int = 1): String
       }
@@ -84,6 +86,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
         # This description has been changed
         a: String!
         b: Int!
+        c(arg: Options): Options
       }
       input BType {
         a: String!
@@ -111,6 +114,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
           # Description for a
           a: Int
           b: String!
+          option: Options
         ): String
         b(arg: Int = 2): String
       }
