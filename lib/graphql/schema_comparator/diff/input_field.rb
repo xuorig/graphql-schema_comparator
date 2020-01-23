@@ -21,7 +21,7 @@ module GraphQL
             changes << Changes::InputFieldDefaultChanged.new(old_type, old_field, new_field)
           end
 
-          if old_field.type != new_field.type
+          if old_field.type.graphql_definition != new_field.type.graphql_definition
             changes << Changes::InputFieldTypeChanged.new(old_type, old_field, new_field)
           end
 

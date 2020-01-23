@@ -10,6 +10,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
         # a
         a: String = "1"
         b: String!
+        options: [Options]
       }
       # The Query Root of this schema
       type Query {
@@ -76,6 +77,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
         # changed
         a: Int = 1
         c: String!
+        options: [Options]
       }
       # Query Root description changed
       type Query {
