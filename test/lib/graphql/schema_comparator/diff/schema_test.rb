@@ -168,6 +168,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Deprecation reason on field `CType.a` has changed from `whynot` to `cuz`",
       "Argument `arg: Int` added to field `CType.a`",
       "Default value `10` was added to argument `arg` on field `CType.d`",
+      "Default value for argument `anotherArg` on directive `yolo` changed from `__no_default__` to `Test`",
       "Union member `BType` was removed from Union type `MyUnion`",
       "Union member `DType` was added to Union type `MyUnion`",
       "Field `anotherInterfaceField` was removed from object type `AnotherInterface`",
@@ -191,7 +192,6 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Argument `willBeRemoved` was removed from directive `yolo`",
       "Description for argument `someArg` on directive `yolo` changed from `Included when true.` to `someArg does stuff`",
       "Type for argument `someArg` on directive `yolo` changed from `Boolean!` to `String!`",
-      "Default value for argument `anotherArg` on directive `yolo` changed from `` to `Test`",
     ].sort, @differ.diff.map(&:message).sort
 
     assert_equal [

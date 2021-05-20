@@ -1,6 +1,6 @@
 require "test_helper"
 
-class GraphQL::SchemaComparator::Diff::DirectiveTest < Minitest::Test
+class GraphQL::SchemaComparator::Diff::EnumTest < Minitest::Test
   def setup
     @old_enum = GraphQL::EnumType.define do
      name "Languages"

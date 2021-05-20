@@ -28,6 +28,7 @@ class GraphQL::SchemaComparatorTest < Minitest::Test
     assert_equal [
       "Field `Query.a` changed type from `String!` to `Int`",
       "Field `b` was added to object type `Query`",
+      "Type `Int` was added",
     ], result.changes.map(&:message)
 
     assert_equal true, result.breaking?
@@ -41,6 +42,7 @@ class GraphQL::SchemaComparatorTest < Minitest::Test
     assert_equal [
       "Field `Query.a` changed type from `String!` to `Int`",
       "Field `b` was added to object type `Query`",
+      "Type `Int` was added",
     ], result.changes.map(&:message)
 
     assert_equal true, result.breaking?
