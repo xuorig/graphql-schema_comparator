@@ -25,9 +25,9 @@ class GraphQL::SchemaComparator::Diff::DirectiveTest < Minitest::Test
       "Location `SUBSCRIPTION` was added to directive `Default`",
       "Argument `c` was added to directive `Default`",
       "Argument `b` was removed from directive `Default`",
-      "Description for argument `a` on directive `Default` changed from `Another Description` to `A Description`",
-      "Default value for argument `a` on directive `Default` changed from `Yes` to `No`",
-      "Type for argument `a` on directive `Default` changed from `String` to `Int`"
+      "Description for argument `a` on directive `Default` changed from `A Description` to `Another Description`",
+      "Default value for argument `a` on directive `Default` changed from `No` to `Yes`",
+      "Type for argument `a` on directive `Default` changed from `Int` to `String`"
     ], @differ.diff.map(&:message)
   end
 end
