@@ -502,7 +502,7 @@ module GraphQL
 
         def message
           "Default value for argument `#{new_argument.graphql_name}` on directive `#{directive.graphql_name}` changed"\
-            " from `#{old_argument.ast_node.default_value}` to `#{new_argument.ast_node.default_value}`"
+            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
         end
 
         def path
