@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 (May 26 2021)
+
+### Bug Fix
+
+  - Fix comparing directives (#36)
+
 ## 1.0.0 (January 23 2020)
 
 ### Breaking Changes
@@ -61,32 +67,32 @@ Added changes:
 
 ### Bug fixes
 
-Fix issue in Enum differ (https://github.com/xuorig/graphql-schema_comparator/issues/9)
+  - Fix issue in Enum differ (https://github.com/xuorig/graphql-schema_comparator/issues/9)
 
 ## 0.3.1 (Nov 13 2017)
 
 ### Bug Fixes
 
-- Fix no method breaking issue https://github.com/xuorig/graphql-schema_comparator/issues/8
+  - Fix no method breaking issue https://github.com/xuorig/graphql-schema_comparator/issues/8
 
 ## 0.3.0 (Oct 14 2017)
 
 ### New features
 
-- Top level Directive definitions are now diffed, but not directives used on definitions (Coming soon)
-- Base class for changes added.
+  - Top level Directive definitions are now diffed, but not directives used on definitions (Coming soon)
+  - Base class for changes added.
 
 ### breaking changes
 
-- `breaking` method on change objects has been renamed `breaking?` for style
+  - `breaking` method on change objects has been renamed `breaking?` for style
 
 ## 0.2.0 (Aug 18 2017)
 
 ### New features
 
-- Add `#non_breaking_changes` to get a list of non breaking changes from a comparison result. (#4)
-- CLI now Prints results sorted and grouped by breaking / non-breaking (#3)
+  - Add `#non_breaking_changes` to get a list of non breaking changes from a comparison result. (#4)
+  - CLI now Prints results sorted and grouped by breaking / non-breaking (#3)
 
 ### Bug fixes
 
-- Fix message for `EnumValueRemoved` (#5)
+  - Fix message for `EnumValueRemoved` (#5)
