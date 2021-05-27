@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{GraphQL::SchemaComparator compares two GraphQL schemas given their SDL and returns a list of changes.}
   spec.homepage      = "https://github.com/xuorig/graphql-schema_comparator"
   spec.license       = "MIT"
-  s.metadata         = {
+  spec.metadata         = {
     "homepage_uri"    => "https://github.com/xuorig/graphql-schema_comparator",
     "changelog_uri"   => "https://github.com/xuorig/graphql-schema_comparator/blob/master/CHANGELOG.md",
     "source_code_uri" => "https://github.com/xuorig/graphql-schema_comparator",
