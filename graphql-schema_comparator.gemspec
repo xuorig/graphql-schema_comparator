@@ -8,15 +8,20 @@ Gem::Specification.new do |spec|
   spec.version       = GraphQL::SchemaComparator::VERSION
   spec.authors       = ["Marc-Andre Giroux"]
   spec.email         = ["mgiroux0@gmail.com"]
-
   spec.summary       = %q{Compare GraphQL schemas and get the changes that happened.}
-  spec.description   = %q{GraphQL::SchemaComparator compares two GraphQL schemas given their IDL and returns a list of changes.}
-  spec.homepage      = "http://mgiroux.me"
+  spec.description   = %q{GraphQL::SchemaComparator compares two GraphQL schemas given their SDL and returns a list of changes.}
+  spec.homepage      = "https://github.com/xuorig/graphql-schema_comparator"
   spec.license       = "MIT"
-
+  s.metadata         = {
+    "homepage_uri"    => "https://github.com/xuorig/graphql-schema_comparator",
+    "changelog_uri"   => "https://github.com/xuorig/graphql-schema_comparator/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/xuorig/graphql-schema_comparator",
+    "bug_tracker_uri" => "https://github.com/xuorig/graphql-schema_comparator/issues",
+  }
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
+
   spec.bindir        = "bin"
   spec.executables   = ["graphql-schema", "schema_comparator"]
   spec.require_paths = ["lib"]
