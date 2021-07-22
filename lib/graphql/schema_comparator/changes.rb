@@ -579,8 +579,8 @@ module GraphQL
         attr_reader :input_object_type, :field, :criticality
 
         def initialize(input_object_type, field)
-          @criticality = if field.type.non_null?
-            Changes::Criticality.breaking(reason: "Adding a non-null field to an existing input type will cause existing queries that use this input type to error because they will not provide a value for this new field.")
+          @criticality = if field.type.non_null? && !field.default_value?
+            Changes::Criticality.breaking(reason: "Adding a non-null input field without a default value to an existing input type will cause existing queries that use this input type to error because they will not provide a value for this new field.")
           else
             Changes::Criticality.non_breaking
           end
@@ -602,8 +602,8 @@ module GraphQL
         attr_reader :type, :field, :argument, :criticality
 
         def initialize(type, field, argument)
-          @criticality = if argument.type.non_null?
-            Changes::Criticality.breaking(reason: "Adding a required argument to an existing field is a breaking change because it will cause existing uses of this field to error.")
+          @criticality = if argument.type.non_null? && !argument.default_value?
+            Changes::Criticality.breaking(reason: "Adding a required argument without a default value to an existing field is a breaking change because it will cause existing uses of this field to error.")
           else
             Changes::Criticality.non_breaking
           end
