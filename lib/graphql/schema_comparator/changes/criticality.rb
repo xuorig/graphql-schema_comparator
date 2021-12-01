@@ -14,7 +14,7 @@ module GraphQL
         # these changes.
         DANGEROUS = 2
 
-        # Breaking criticality are changes that immediatly impact
+        # Breaking criticality are changes that immediately impact
         # clients usually causing queries not to be valid anymore.
         BREAKING = 3
 
