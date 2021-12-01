@@ -843,7 +843,11 @@ module GraphQL
         attr_reader :object_type, :field, :criticality
 
         def initialize(object_type, field)
-          @criticality = Changes::Criticality.non_breaking
+          @criticality = if field.graphql_name == 'id'
+                           Changes::Criticality.dangerous('this can blow up linters and change caching behaviour')
+                         else
+                           Changes::Criticality.non_breaking
+                         end
           @object_type = object_type
           @field = field
         end
