@@ -97,7 +97,7 @@ class GraphQL::SchemaComparator::Diff::InputFieldTest < Minitest::Test
     assert_equal "Input field `Input.arg` changed type from `[String]!` to `[String]`", change.message
   end
 
-  def test_diff_input_field_type_change_within_lists_of_the_same_underyling_types
+  def test_diff_input_field_type_change_within_lists_of_the_same_underlying_types
     old_input_field = GraphQL::Argument.define do
       name "arg"
       type !types[!types.String]
