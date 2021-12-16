@@ -40,16 +40,16 @@ module GraphQL
           if old_type.kind != new_type.kind
             changes << Changes::TypeKindChanged.new(old_type, new_type)
           else
-            case old_type.graphql_definition
-            when GraphQL::EnumType
+            case old_type.kind.name
+            when "ENUM"
               changes += Diff::Enum.new(old_type, new_type).diff
-            when GraphQL::UnionType
+            when "UNION"
               changes += Diff::Union.new(old_type, new_type).diff
-            when GraphQL::InputObjectType
+            when "INPUT_OBJECT"
               changes += Diff::InputObject.new(old_type, new_type).diff
-            when GraphQL::ObjectType
+            when "OBJECT"
               changes += Diff::ObjectType.new(old_type, new_type).diff
-            when GraphQL::InterfaceType
+            when "INTERFACE"
               changes += Diff::Interface.new(old_type, new_type).diff
             end
           end
@@ -64,15 +64,15 @@ module GraphQL
         def changes_in_schema
           changes = []
 
-          if old_schema.query&.to_graphql != new_schema.query&.to_graphql
+          if old_schema.query&.graphql_name != new_schema.query&.graphql_name
             changes << Changes::SchemaQueryTypeChanged.new(old_schema, new_schema)
           end
 
-          if old_schema.mutation&.to_graphql != new_schema.mutation&.to_graphql
+          if old_schema.mutation&.graphql_name != new_schema.mutation&.graphql_name
             changes << Changes::SchemaMutationTypeChanged.new(old_schema, new_schema)
           end
 
-          if old_schema.subscription&.to_graphql != new_schema.subscription&.to_graphql
+          if old_schema.subscription&.graphql_name != new_schema.subscription&.graphql_name
             changes << Changes::SchemaSubscriptionTypeChanged.new(old_schema, new_schema)
           end
 

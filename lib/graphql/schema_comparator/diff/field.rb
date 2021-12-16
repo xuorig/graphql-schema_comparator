@@ -24,7 +24,7 @@ module GraphQL
             changes << Changes::FieldDeprecationChanged.new(new_type, old_field, new_field)
           end
 
-          if old_field.type.graphql_definition != new_field.type.graphql_definition
+          if old_field.type.to_type_signature != new_field.type.to_type_signature
             changes << Changes::FieldTypeChanged.new(new_type, old_field, new_field)
           end
 
@@ -51,12 +51,12 @@ module GraphQL
         )
 
         def arg_removals
-          removed = old_arguments.values.select { |arg| !new_arguments[arg.name] }
+          removed = old_arguments.values.select { |arg| !new_arguments[arg.graphql_name] }
           removed.map { |arg| Changes::FieldArgumentRemoved.new(new_type, old_field, arg) }
         end
 
         def arg_additions
-          removed = new_arguments.values.select { |arg| !old_arguments[arg.name] }
+          removed = new_arguments.values.select { |arg| !old_arguments[arg.graphql_name] }
           removed.map { |arg| Changes::FieldArgumentAdded.new(new_type, new_field, arg) }
         end
 

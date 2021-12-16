@@ -1,37 +1,21 @@
 require "test_helper"
 
 class GraphQL::SchemaComparator::Changes::FieldArgumentAddedTest < Minitest::Test
-  def setup
-    @type = GraphQL::ObjectType.define do
-      name "Type"
-    end
+  class Type < GraphQL::Schema::Object
+    graphql_name "Type"
 
-    @field = GraphQL::Field.define do
-      name "field"
-    end
-
-    @nullable_argument = GraphQL::Argument.define do
-      name "foo"
-      type GraphQL::STRING_TYPE
-    end
-
-    @non_null_argument = GraphQL::Argument.define do
-      name "foo"
-      type !GraphQL::STRING_TYPE
-    end
-
-    @non_null_argument_with_default = GraphQL::Argument.define do
-      name "foo"
-      type !GraphQL::STRING_TYPE
-      default_value "bar"
+    field :field, String, null: true do
+      argument :nullable, String, required: false
+      argument :non_null, String, required: true
+      argument :non_null_with_default, String, required: true, default_value: "bar"
     end
   end
 
   def test_nullable_added
     change = GraphQL::SchemaComparator::Changes::FieldArgumentAdded.new(
-      @type,
-      @field,
-      @nullable_argument
+      Type,
+      Type.fields["field"],
+      Type.fields["field"].arguments["nullable"],
     )
 
     assert change.non_breaking?
@@ -39,9 +23,9 @@ class GraphQL::SchemaComparator::Changes::FieldArgumentAddedTest < Minitest::Tes
 
   def test_non_null_added
     change = GraphQL::SchemaComparator::Changes::FieldArgumentAdded.new(
-      @type,
-      @field,
-      @non_null_argument
+      Type,
+      Type.fields["field"],
+      Type.fields["field"].arguments["nonNull"],
     )
 
     assert change.breaking?
@@ -49,9 +33,9 @@ class GraphQL::SchemaComparator::Changes::FieldArgumentAddedTest < Minitest::Tes
 
   def test_non_null_with_default_added
     change = GraphQL::SchemaComparator::Changes::FieldArgumentAdded.new(
-      @type,
-      @field,
-      @non_null_argument_with_default
+      Type,
+      Type.fields["field"],
+      Type.fields["field"].arguments["nonNullWithDefault"],
     )
 
     assert change.non_breaking?

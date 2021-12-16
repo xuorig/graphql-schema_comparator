@@ -34,7 +34,7 @@ module GraphQL
         end
 
         def filter_types(types, exclude_types)
-          types.select { |type| !exclude_types.map(&:graphql_definition).include?(type.graphql_definition) }
+          types.select { |type| !exclude_types.map(&:graphql_name).include?(type.graphql_name) }
         end
       end
     end
