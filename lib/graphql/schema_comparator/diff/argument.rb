@@ -21,7 +21,7 @@ module GraphQL
             changes << Changes::FieldArgumentDefaultChanged.new(type, field, old_arg, new_arg)
           end
 
-          if old_arg.type.graphql_definition != new_arg.type.graphql_definition
+          if old_arg.type.to_type_signature != new_arg.type.to_type_signature
             changes << Changes::FieldArgumentTypeChanged.new(type, field, old_arg, new_arg)
           end
 

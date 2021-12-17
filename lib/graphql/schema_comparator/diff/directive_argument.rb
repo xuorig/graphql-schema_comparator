@@ -19,7 +19,7 @@ module GraphQL
             changes << Changes::DirectiveArgumentDefaultChanged.new(directive, old_arg, new_arg)
           end
 
-          if old_arg.type.graphql_definition != new_arg.type.graphql_definition
+          if old_arg.type != new_arg.type
             changes << Changes::DirectiveArgumentTypeChanged.new(directive, old_arg, new_arg)
           end
 

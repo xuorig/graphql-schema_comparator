@@ -39,11 +39,11 @@ module GraphQL
         end
 
         def removed_arguments
-          old_arguments.values.select { |arg| !new_arguments[arg.name] }
+          old_arguments.values.select { |arg| !new_arguments[arg.graphql_name] }
         end
 
         def added_arguments
-          new_arguments.values.select { |arg| !old_arguments[arg.name] }
+          new_arguments.values.select { |arg| !old_arguments[arg.graphql_name] }
         end
 
         def each_common_argument(&block)

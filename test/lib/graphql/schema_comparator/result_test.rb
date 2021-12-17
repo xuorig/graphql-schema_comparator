@@ -1,18 +1,30 @@
 require "test_helper"
 
 class GraphQL::SchemaComparator::ResultTest < Minitest::Test
+  class Type < GraphQL::Schema::Object
+    field :foo, String, null: true
+  end
+
+  class EnumType < GraphQL::Schema::Enum
+    value :foo
+  end
+
   def test_changes
-    removed_z = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.define(name: "Z"), GraphQL::Field.define(name: "a"))
-    removed_a = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.define(name: "A"), GraphQL::Field.define(name: "a"))
-    added_a = GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.define(name: "A"), GraphQL::Field.define(name: "a"))
+
+    removed_z = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
+    removed_a = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
+    added_a = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
+
     result = GraphQL::SchemaComparator::Result.new([removed_z, added_a, removed_a])
+
     assert_equal [removed_a, removed_z, added_a], result.changes
   end
 
   def test_identical_returns_false_when_schemas_have_changes
     result = GraphQL::SchemaComparator::Result.new([
-      GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.new, GraphQL::Field.new)
+      GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
     ])
+
     assert_equal false, result.identical?
   end
 
@@ -23,23 +35,25 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
 
   def test_breaking_returns_true_when_at_least_one_breaking_change
     result = GraphQL::SchemaComparator::Result.new([
-      GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.new, GraphQL::Field.new)
+      GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
     ])
+
     assert_equal true, result.breaking?
   end
 
   def test_breaking_returns_false_when_no_breaking_changes
     result = GraphQL::SchemaComparator::Result.new([
-      GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.new, GraphQL::Field.new)
+      GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
     ])
+
     assert_equal false, result.breaking?
   end
 
   def test_breaking_changes
-    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(GraphQL::EnumType.new, GraphQL::EnumType::EnumValue.new)
-    field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.new, GraphQL::Field.new)
-    field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.new, GraphQL::Field.new)
-    type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(GraphQL::ObjectType.new, GraphQL::ObjectType.new)
+    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(EnumType, EnumType.values["foo"])
+    field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
+    field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
+    type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(Type, Type)
 
     result = GraphQL::SchemaComparator::Result.new([
       enum_value_added,
@@ -52,10 +66,10 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
   end
 
   def test_dangerous_changes
-    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(GraphQL::EnumType.new, GraphQL::EnumType::EnumValue.new)
-    field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.new, GraphQL::Field.new)
-    field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.new, GraphQL::Field.new)
-    type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(GraphQL::ObjectType.new, GraphQL::ObjectType.new)
+    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(EnumType, EnumType.values["foo"])
+    field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
+    field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
+    type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(Type, Type)
 
     result = GraphQL::SchemaComparator::Result.new([
       enum_value_added,
@@ -68,10 +82,10 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
   end
 
   def test_non_breaking_changes
-    field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(GraphQL::ObjectType.new, GraphQL::Field.new)
-    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(GraphQL::EnumType.new, GraphQL::EnumType::EnumValue.new)
-    field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(GraphQL::ObjectType.new, GraphQL::Field.new)
-    type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(GraphQL::ObjectType.new, GraphQL::ObjectType.new)
+    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(EnumType, EnumType.values["foo"])
+    field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
+    field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
+    type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(Type, Type)
 
     result = GraphQL::SchemaComparator::Result.new([
       enum_value_added,

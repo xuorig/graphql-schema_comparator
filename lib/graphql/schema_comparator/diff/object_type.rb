@@ -3,8 +3,8 @@ module GraphQL
     module Diff
       class ObjectType
         def initialize(old_type, new_type)
-          @old_type = old_type.graphql_definition
-          @new_type = new_type.graphql_definition
+          @old_type = old_type
+          @new_type = new_type
 
           @old_fields = old_type.fields
           @new_fields = new_type.fields
@@ -41,25 +41,25 @@ module GraphQL
 
         def interface_removals
           removed = filter_interfaces(old_interfaces, new_interfaces)
-          removed.map { |iface| Changes::ObjectTypeInterfaceRemoved.new(iface, old_type) }
+          removed.map { |interface| Changes::ObjectTypeInterfaceRemoved.new(interface, old_type) }
         end
 
         def interface_additions
           added = filter_interfaces(new_interfaces, old_interfaces)
-          added.map { |iface| Changes::ObjectTypeInterfaceAdded.new(iface, new_type) }
+          added.map { |interface| Changes::ObjectTypeInterfaceAdded.new(interface, new_type) }
         end
 
         def filter_interfaces(interfaces, excluded_interfaces)
-          interfaces.select { |interface| !excluded_interfaces.map(&:graphql_definition).include?(interface.graphql_definition) }
+          interfaces.select { |interface| !excluded_interfaces.map(&:graphql_name).include?(interface.graphql_name) }
         end
 
         def field_removals
-          removed = old_fields.values.select { |field| !new_fields[field.name] }
+          removed = old_fields.values.select { |field| !new_fields[field.graphql_name] }
           removed.map { |field| Changes::FieldRemoved.new(old_type, field) }
         end
 
         def field_additions
-          added = new_fields.values.select { |field| !old_fields[field.name] }
+          added = new_fields.values.select { |field| !old_fields[field.graphql_name] }
           added.map { |field| Changes::FieldAdded.new(new_type, field) }
         end
 

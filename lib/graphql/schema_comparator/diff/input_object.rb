@@ -39,11 +39,11 @@ module GraphQL
         end
 
         def removed_fields
-          old_fields.values.select { |field| !new_fields[field.name] }
+          old_fields.values.select { |field| !new_fields[field.graphql_name] }
         end
 
         def added_fields
-          new_fields.values.select { |field| !old_fields[field.name] }
+          new_fields.values.select { |field| !old_fields[field.graphql_name] }
         end
       end
     end

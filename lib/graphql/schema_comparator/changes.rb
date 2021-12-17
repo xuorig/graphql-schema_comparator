@@ -51,11 +51,11 @@ module GraphQL
         end
 
         def message
-          "Type `#{removed_type.graphql_definition}` was removed"
+          "Type `#{removed_type.graphql_name}` was removed"
         end
 
         def path
-          removed_type.graphql_definition.to_s
+          removed_type.path
         end
       end
 
@@ -88,11 +88,11 @@ module GraphQL
         end
 
         def message
-          "`#{old_type.graphql_definition}` kind changed from `#{old_type.kind}` to `#{new_type.kind}`"
+          "`#{old_type.graphql_name}` kind changed from `#{old_type.kind}` to `#{new_type.kind}`"
         end
 
         def path
-          old_type.graphql_definition.to_s
+          old_type.path
         end
       end
 
@@ -108,11 +108,11 @@ module GraphQL
         end
 
         def message
-          "Enum value `#{enum_value.graphql_name}` was removed from enum `#{enum_type.graphql_definition}`"
+          "Enum value `#{enum_value.graphql_name}` was removed from enum `#{enum_type.graphql_name}`"
         end
 
         def path
-          [enum_type.graphql_definition, enum_value.graphql_name].join('.')
+          enum_value.path
         end
       end
 
@@ -128,11 +128,11 @@ module GraphQL
         end
 
         def message
-          "Union member `#{union_member.graphql_name}` was removed from Union type `#{union_type.graphql_definition}`"
+          "Union member `#{union_member.graphql_name}` was removed from Union type `#{union_type.graphql_name}`"
         end
 
         def path
-          union_type.graphql_definition.to_s
+          union_type.path
         end
       end
 
@@ -148,11 +148,11 @@ module GraphQL
         end
 
         def message
-          "Input field `#{field.graphql_name}` was removed from input object type `#{input_object_type.graphql_definition}`"
+          "Input field `#{field.graphql_name}` was removed from input object type `#{input_object_type.graphql_name}`"
         end
 
         def path
-          [input_object_type.graphql_definition, field.graphql_name].join('.')
+          field.path
         end
       end
 
@@ -169,11 +169,11 @@ module GraphQL
         end
 
         def message
-          "Argument `#{argument.graphql_name}: #{argument.type.graphql_definition}` was removed from field `#{object_type.graphql_definition}.#{field.graphql_name}`"
+          "Argument `#{argument.graphql_name}: #{argument.type.graphql_name}` was removed from field `#{object_type.graphql_name}.#{field.graphql_name}`"
         end
 
         def path
-          [object_type.graphql_definition, field.graphql_name, argument.graphql_name].join('.')
+          argument.path
         end
       end
 
@@ -233,11 +233,11 @@ module GraphQL
         end
 
         def message
-          "Field `#{field.graphql_name}` was removed from object type `#{object_type.graphql_definition}`"
+          "Field `#{field.graphql_name}` was removed from object type `#{object_type.graphql_name}`"
         end
 
         def path
-          [object_type.graphql_definition, field.graphql_name].join('.')
+          [object_type.graphql_name, field.graphql_name].join(".")
         end
       end
 
@@ -271,11 +271,11 @@ module GraphQL
         end
 
         def message
-          "`#{object_type.graphql_definition}` object type no longer implements `#{interface.graphql_name}` interface"
+          "`#{object_type.graphql_name}` object type no longer implements `#{interface.graphql_name}` interface"
         end
 
         def path
-          object_type.graphql_definition.to_s
+          object_type.path
         end
       end
 
@@ -291,7 +291,7 @@ module GraphQL
         end
 
         def message
-          "Field `#{type.graphql_definition}.#{old_field.graphql_name}` changed type from `#{old_field.type.graphql_definition}` to `#{new_field.type.graphql_definition}`"
+          "Field `#{old_field.path}` changed type from `#{old_field.type.to_type_signature}` to `#{new_field.type.to_type_signature}`"
         end
 
         def criticality
@@ -303,7 +303,7 @@ module GraphQL
         end
 
         def path
-          [type.graphql_definition, old_field.graphql_name].join('.')
+          old_field.path
         end
       end
 
@@ -329,11 +329,11 @@ module GraphQL
         end
 
         def message
-          "Input field `#{input_type.graphql_definition}.#{old_input_field.graphql_name}` changed type from `#{old_input_field.type.graphql_definition}` to `#{new_input_field.type.graphql_definition}`"
+          "Input field `#{path}` changed type from `#{old_input_field.type.to_type_signature}` to `#{new_input_field.type.to_type_signature}`"
         end
 
         def path
-          [input_type.graphql_definition, old_input_field.graphql_name].join('.')
+          old_input_field.path
         end
       end
 
@@ -360,12 +360,12 @@ module GraphQL
         end
 
         def message
-          "Type for argument `#{new_argument.graphql_name}` on field `#{type.graphql_definition}.#{field.graphql_definition.name}` changed"\
-            " from `#{old_argument.type.graphql_definition}` to `#{new_argument.type.graphql_definition}`"
+          "Type for argument `#{new_argument.graphql_name}` on field `#{field.path}` changed"\
+            " from `#{old_argument.type.to_type_signature}` to `#{new_argument.type.to_type_signature}`"
         end
 
         def path
-          [type.graphql_definition, field.graphql_definition.name, old_argument.graphql_name].join('.')
+          old_argument.path
         end
       end
 
@@ -390,7 +390,7 @@ module GraphQL
 
         def message
           "Type for argument `#{new_argument.graphql_name}` on directive `#{directive.graphql_name}` changed"\
-            " from `#{old_argument.type.graphql_definition}` to `#{new_argument.type.graphql_definition}`"
+            " from `#{old_argument.type.to_type_signature}` to `#{new_argument.type.to_type_signature}`"
         end
 
         def path
@@ -452,15 +452,15 @@ module GraphQL
 
         def message
           if old_argument.default_value.nil? || old_argument.default_value == :__no_default__
-            "Default value `#{new_argument.default_value}` was added to argument `#{new_argument.graphql_name}` on field `#{type.graphql_definition}.#{field.graphql_name}`"
+            "Default value `#{new_argument.default_value}` was added to argument `#{new_argument.graphql_name}` on field `#{field.path}`"
           else
-            "Default value for argument `#{new_argument.graphql_name}` on field `#{type.graphql_definition}.#{field.name}` changed"\
+            "Default value for argument `#{new_argument.graphql_name}` on field `#{field.path}` changed"\
               " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
           end
         end
 
         def path
-          [type.graphql_definition, field.graphql_name, old_argument.graphql_name].join('.')
+          old_argument.path
         end
       end
 
@@ -478,12 +478,12 @@ module GraphQL
         end
 
         def message
-          "Input field `#{input_type.graphql_definition}.#{old_field.graphql_name}` default changed"\
+          "Input field `#{path}` default changed"\
             " from `#{old_field.default_value}` to `#{new_field.default_value}`"
         end
 
         def path
-          [input_type.graphql_definition, old_field.graphql_name].join(".")
+          old_field.path
         end
       end
 
@@ -523,11 +523,11 @@ module GraphQL
         end
 
         def message
-          "Enum value `#{enum_value.graphql_name}` was added to enum `#{enum_type.graphql_definition}`"
+          "Enum value `#{enum_value.graphql_name}` was added to enum `#{enum_type.graphql_name}`"
         end
 
         def path
-          [enum_type.graphql_definition, enum_value.graphql_name].join(".")
+          enum_value.path
         end
       end
 
@@ -544,11 +544,11 @@ module GraphQL
         end
 
         def message
-          "Union member `#{union_member.graphql_name}` was added to Union type `#{union_type.graphql_definition}`"
+          "Union member `#{union_member.graphql_name}` was added to Union type `#{union_type.graphql_name}`"
         end
 
         def path
-          union_type.graphql_definition.to_s
+          union_type.path
         end
       end
 
@@ -565,11 +565,11 @@ module GraphQL
         end
 
         def message
-          "`#{object_type.graphql_definition}` object implements `#{interface.graphql_name}` interface"
+          "`#{object_type.graphql_name}` object implements `#{interface.graphql_name}` interface"
         end
 
         def path
-          object_type.graphql_definition.to_s
+          object_type.path
         end
       end
 
@@ -590,11 +590,11 @@ module GraphQL
         end
 
         def message
-          "Input field `#{field.graphql_name}` was added to input object type `#{input_object_type.graphql_definition}`"
+          "Input field `#{field.graphql_name}` was added to input object type `#{input_object_type.graphql_name}`"
         end
 
         def path
-          [input_object_type.graphql_definition, field.graphql_name].join(".")
+          field.path
         end
       end
 
@@ -614,11 +614,11 @@ module GraphQL
         end
 
         def message
-          "Argument `#{argument.graphql_name}: #{argument.type.graphql_definition}` added to field `#{type.graphql_definition}.#{field.graphql_name}`"
+          "Argument `#{argument.graphql_name}: #{argument.type.graphql_name}` added to field `#{field.path}`"
         end
 
         def path
-          [type.graphql_definition, field.graphql_name, argument.graphql_name].join(".")
+          argument.path
         end
       end
 
@@ -631,11 +631,11 @@ module GraphQL
         end
 
         def message
-          "Type `#{type.graphql_definition}` was added"
+          "Type `#{type.graphql_name}` was added"
         end
 
         def path
-          type.graphql_definition.to_s
+          type.path
         end
       end
 
@@ -666,11 +666,11 @@ module GraphQL
         end
 
         def message
-          "Description `#{old_type.description}` on type `#{old_type.graphql_definition}` has changed to `#{new_type.description}`"
+          "Description `#{old_type.description}` on type `#{old_type.graphql_name}` has changed to `#{new_type.description}`"
         end
 
         def path
-          old_type.graphql_definition.to_s
+          old_type.path
         end
       end
 
@@ -685,12 +685,12 @@ module GraphQL
         end
 
         def message
-          "Description for enum value `#{enum.graphql_name}.#{new_enum_value.graphql_name}` changed from " \
+          "Description for enum value `#{new_enum_value.path}` changed from " \
             "`#{old_enum_value.description}` to `#{new_enum_value.description}`"
         end
 
         def path
-          [enum.graphql_name, old_enum_value.graphql_name].join(".")
+          old_enum_value.path
         end
       end
 
@@ -706,16 +706,15 @@ module GraphQL
 
         def message
           if old_enum_value.deprecation_reason
-            "Enum value `#{enum.graphql_name}.#{new_enum_value.graphql_name}` deprecation reason changed " \
+            "Enum value `#{new_enum_value.path}` deprecation reason changed " \
               "from `#{old_enum_value.deprecation_reason}` to `#{new_enum_value.deprecation_reason}`"
           else
-            "Enum value `#{enum.graphql_name}.#{new_enum_value.graphql_name}` was deprecated with reason" \
-              " `#{new_enum_value.deprecation_reason}`"
+            "Enum value `#{new_enum_value.path}` was deprecated with reason `#{new_enum_value.deprecation_reason}`"
           end
         end
 
         def path
-          [enum.graphql_name, old_enum_value.graphql_name].join(".")
+          old_enum_value.path
         end
       end
 
@@ -730,12 +729,12 @@ module GraphQL
         end
 
         def message
-          "Input field `#{input_type.graphql_definition}.#{old_field.graphql_name}` description changed"\
+          "Input field `#{old_field.path}` description changed"\
             " from `#{old_field.description}` to `#{new_field.description}`"
         end
 
         def path
-          [input_type.graphql_definition, old_field.graphql_name].join(".")
+          old_field.path
         end
       end
 
@@ -769,12 +768,12 @@ module GraphQL
         end
 
         def message
-          "Field `#{type.graphql_definition}.#{old_field.graphql_name}` description changed"\
+          "Field `#{old_field.path}` description changed"\
             " from `#{old_field.description}` to `#{new_field.description}`"
         end
 
         def path
-          [type.graphql_definition, old_field.graphql_name].join(".")
+          old_field.path
         end
       end
 
@@ -790,12 +789,12 @@ module GraphQL
         end
 
         def message
-          "Description for argument `#{new_argument.graphql_name}` on field `#{type.graphql_definition}.#{field.graphql_name}` changed"\
+          "Description for argument `#{new_argument.graphql_name}` on field `#{field.path}` changed"\
             " from `#{old_argument.description}` to `#{new_argument.description}`"
         end
 
         def path
-          [type.graphql_definition, field.graphql_name, old_argument.graphql_name].join(".")
+          old_argument.path
         end
       end
 
@@ -830,12 +829,12 @@ module GraphQL
         end
 
         def message
-          "Deprecation reason on field `#{type.graphql_definition}.#{new_field.graphql_name}` has changed "\
+          "Deprecation reason on field `#{new_field.path}` has changed "\
             "from `#{old_field.deprecation_reason}` to `#{new_field.deprecation_reason}`"
         end
 
         def path
-          [type.graphql_definition, old_field.graphql_name].join(".")
+          old_field.path
         end
       end
 
@@ -849,11 +848,11 @@ module GraphQL
         end
 
         def message
-          "Field `#{field.graphql_name}` was added to object type `#{object_type.graphql_definition}`"
+          "Field `#{field.graphql_name}` was added to object type `#{object_type.graphql_name}`"
         end
 
         def path
-          [object_type.graphql_definition, field.graphql_name].join(".")
+          [object_type.graphql_name, field.graphql_name].join(".")
         end
       end
 
