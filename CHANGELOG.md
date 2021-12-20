@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 (December 20 2021)
+
+### Bug Fix
+
+  - Adding non-null arguments with a default value should be non-breaking (#38)
+
+### New Features
+
+  - Remove legacy `graphql` gem API usage and support versions >= 1.13 (#46)
+
 ## 1.0.1 (May 26 2021)
 
 ### Bug Fix
