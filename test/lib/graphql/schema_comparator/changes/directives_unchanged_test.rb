@@ -24,5 +24,6 @@ class GraphQL::SchemaComparator::Changes::DirectivesUnchangedTest < Minitest::Te
     result = GraphQL::SchemaComparator.compare(schema_idl, schema_idl)
 
     assert_equal [], result.breaking_changes.map(&:message)
+    assert_equal [], result.non_breaking_changes.map(&:message)
   end
 end
