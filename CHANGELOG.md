@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 (January 7 2022)
+
+### Bug Fix
+
+  - Fix directive type change false positive bug (#47)
+
 ## 1.1.0 (December 20 2021)
 
 ### Bug Fix
