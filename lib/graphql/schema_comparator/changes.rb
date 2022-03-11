@@ -169,7 +169,7 @@ module GraphQL
         end
 
         def message
-          "Argument `#{argument.graphql_name}: #{argument.type.graphql_name}` was removed from field `#{object_type.graphql_name}.#{field.graphql_name}`"
+          "Argument `#{argument.graphql_name}: #{argument.type.to_type_signature}` was removed from field `#{object_type.graphql_name}.#{field.graphql_name}`"
         end
 
         def path
