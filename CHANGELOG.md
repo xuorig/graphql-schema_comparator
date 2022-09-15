@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2 (September 15 2022)
+
+### Bug Fix
+
+  - Fix field argument removed message (#51)
+  - Fix safe type change comparison (#53)
+
 ## 1.1.1 (January 7 2022)
 
 ### Bug Fix
