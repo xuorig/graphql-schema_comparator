@@ -102,9 +102,15 @@ module GraphQL
         def initialize(enum_type, enum_value, usage)
           @enum_value = enum_value
           @enum_type = enum_type
-          @criticality = usage.input? ? Changes::Criticality.breaking(
-            reason: "Removing an enum value will cause existing queries that use this enum value to error."
-          ) : Changes::Criticality.non_breaking
+          @criticality = if usage.input?
+                           Changes::Criticality.breaking(
+                             reason: "Removing an enum value will cause existing queries that use this enum value to error."
+                           )
+                         else
+                           Changes::Criticality.non_breaking(
+                             reason: "Removing an enum value for enums used only in outputs is non-breaking."
+                           )
+                         end
         end
 
         def message
@@ -516,10 +522,16 @@ module GraphQL
         def initialize(enum_type, enum_value, usage)
           @enum_type = enum_type
           @enum_value = enum_value
-          @criticality = usage.output? ? Changes::Criticality.dangerous(
-            reason: "Adding an enum value may break existing clients that were not " \
-              "programming defensively against an added case when querying an enum."
-          ) : Changes::Criticality.non_breaking
+          @criticality = if usage.output?
+                           Changes::Criticality.dangerous(
+                             reason: "Adding an enum value may break existing clients that were not " \
+                              "programmed defensively against an added case when querying an enum."
+                           )
+                         else
+                           Changes::Criticality.non_breaking(
+                             reason: "Adding an enum value for enums used only in inputs is non-breaking."
+                           )
+                         end
         end
 
         def message
