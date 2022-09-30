@@ -99,12 +99,18 @@ module GraphQL
       class EnumValueRemoved < AbstractChange
         attr_reader :enum_value, :enum_type, :criticality
 
-        def initialize(enum_type, enum_value)
+        def initialize(enum_type, enum_value, usage)
           @enum_value = enum_value
           @enum_type = enum_type
-          @criticality = Changes::Criticality.breaking(
-            reason: "Removing an enum value will cause existing queries that use this enum value to error."
-          )
+          @criticality = if usage.input?
+                           Changes::Criticality.breaking(
+                             reason: "Removing an enum value will cause existing queries that use this enum value to error."
+                           )
+                         else
+                           Changes::Criticality.non_breaking(
+                             reason: "Removing an enum value for enums used only in outputs is non-breaking."
+                           )
+                         end
         end
 
         def message
@@ -513,13 +519,19 @@ module GraphQL
       class EnumValueAdded < AbstractChange
         attr_reader :enum_type, :enum_value, :criticality
 
-        def initialize(enum_type, enum_value)
+        def initialize(enum_type, enum_value, usage)
           @enum_type = enum_type
           @enum_value = enum_value
-          @criticality = Changes::Criticality.dangerous(
-            reason: "Adding an enum value may break existing clients that were not " \
-              "programming defensively against an added case when querying an enum."
-          )
+          @criticality = if usage.output?
+                           Changes::Criticality.dangerous(
+                             reason: "Adding an enum value may break existing clients that were not " \
+                              "programmed defensively against an added case when querying an enum."
+                           )
+                         else
+                           Changes::Criticality.non_breaking(
+                             reason: "Adding an enum value for enums used only in inputs is non-breaking."
+                           )
+                         end
         end
 
         def message

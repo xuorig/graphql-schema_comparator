@@ -18,7 +18,8 @@ class GraphQL::SchemaComparator::Diff::EnumTest < Minitest::Test
       value("CPLUSPLUS", "iamverysmart")
     end
 
-    differ = GraphQL::SchemaComparator::Diff::Enum.new(old_enum, new_enum)
+    usage = GraphQL::SchemaComparator::EnumUsage.new(input: true, output: true)
+    differ = GraphQL::SchemaComparator::Diff::Enum.new(old_enum, new_enum, usage)
 
     assert_equal [
       "Enum value `RUBY` was removed from enum `Languages`",

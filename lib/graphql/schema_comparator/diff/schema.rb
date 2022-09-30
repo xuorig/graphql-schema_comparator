@@ -42,7 +42,7 @@ module GraphQL
           else
             case old_type.kind.name
             when "ENUM"
-              changes += Diff::Enum.new(old_type, new_type).diff
+              changes += Diff::Enum.new(old_type, new_type, enum_usage(new_type)).diff
             when "UNION"
               changes += Diff::Union.new(old_type, new_type).diff
             when "INPUT_OBJECT"
@@ -93,6 +93,12 @@ module GraphQL
         end
 
         private
+
+        def enum_usage(new_enum)
+          input_usage = new_schema.references_to(new_enum).any? { |member| member.is_a?(GraphQL::Schema::Argument) }
+          output_usage = new_schema.references_to(new_enum).any? { |member| member.is_a?(GraphQL::Schema::Field) }
+          EnumUsage.new(input: input_usage, output: output_usage)
+        end
 
         def each_common_type(&block)
           intersection = old_types.keys & new_types.keys

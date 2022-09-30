@@ -2,19 +2,21 @@ module GraphQL
   module SchemaComparator
     module Diff
       class Enum
-        def initialize(old_enum, new_enum)
+        def initialize(old_enum, new_enum, usage)
           @old_enum = old_enum
           @new_enum = new_enum
 
           @old_values = old_enum.values
           @new_values = new_enum.values
+
+          @usage = usage
         end
 
         def diff
           changes = []
 
-          changes += removed_values.map { |value| Changes::EnumValueRemoved.new(old_enum, value) }
-          changes += added_values.map { |value| Changes::EnumValueAdded.new(new_enum, value) }
+          changes += removed_values.map { |value| Changes::EnumValueRemoved.new(old_enum, value, usage) }
+          changes += added_values.map { |value| Changes::EnumValueAdded.new(new_enum, value, usage) }
 
           each_common_value do |old_value, new_value|
             # TODO: Add Directive Stuff
@@ -33,7 +35,7 @@ module GraphQL
 
         private
 
-        attr_reader :old_enum, :new_enum, :old_values, :new_values
+        attr_reader :old_enum, :new_enum, :old_values, :new_values, :usage
 
         def each_common_value(&block)
           intersection = old_values.keys & new_values.keys

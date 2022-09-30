@@ -50,7 +50,11 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
   end
 
   def test_breaking_changes
-    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(EnumType, EnumType.values["foo"])
+    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(
+      EnumType,
+      EnumType.values["foo"],
+      GraphQL::SchemaComparator::EnumUsage.new(input: true, output: true)
+    )
     field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
     field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
     type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(Type, Type)
@@ -66,7 +70,11 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
   end
 
   def test_dangerous_changes
-    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(EnumType, EnumType.values["foo"])
+    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(
+      EnumType,
+      EnumType.values["foo"],
+      GraphQL::SchemaComparator::EnumUsage.new(input: false, output: true)
+    )
     field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
     field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
     type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(Type, Type)
@@ -78,11 +86,15 @@ class GraphQL::SchemaComparator::ResultTest < Minitest::Test
       type_description_changed
     ])
 
-    assert_equal [field_removed], result.breaking_changes
+    assert_equal [enum_value_added], result.dangerous_changes
   end
 
   def test_non_breaking_changes
-    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(EnumType, EnumType.values["foo"])
+    enum_value_added = GraphQL::SchemaComparator::Changes::EnumValueAdded.new(
+      EnumType,
+      EnumType.values["foo"],
+      GraphQL::SchemaComparator::EnumUsage.new(input: false, output: true)
+    )
     field_added = GraphQL::SchemaComparator::Changes::FieldAdded.new(Type, Type.fields["foo"])
     field_removed = GraphQL::SchemaComparator::Changes::FieldRemoved.new(Type, Type.fields["foo"])
     type_description_changed = GraphQL::SchemaComparator::Changes::TypeDescriptionChanged.new(Type, Type)
