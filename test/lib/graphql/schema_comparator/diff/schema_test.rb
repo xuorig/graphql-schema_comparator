@@ -109,6 +109,13 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       type WithInterfaces implements AnInterface {
         a: String!
       }
+      interface ANewInterface {
+        c: Int
+      }
+      type AnotherWithInterfaces implements AnInterface, ANewInterface {
+        interfaceField: Int!
+        c: Int
+      }
       type WithArguments {
         a(
           # Description for a
@@ -175,6 +182,9 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Field `b` was added to object type `AnotherInterface`",
       "`WithInterfaces` object type no longer implements `AnotherInterface` interface",
       "Field `anotherInterfaceField` was removed from object type `WithInterfaces`",
+      "Type `ANewInterface` was added",
+      "Type `AnotherWithInterfaces` was added",
+      "`AnotherWithInterfaces` object implements `AnInterface` interface",
       "Description for argument `a` on field `WithArguments.a` changed from `Meh` to `Description for a`",
       "Type for argument `b` on field `WithArguments.a` changed from `String` to `String!`",
       "Default value for argument `arg` on field `WithArguments.b` changed from `1` to `2`",
@@ -192,7 +202,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "Argument `willBeRemoved` was removed from directive `yolo`",
       "Description for argument `someArg` on directive `yolo` changed from `Included when true.` to `someArg does stuff`",
       "Type for argument `someArg` on directive `yolo` changed from `Boolean!` to `String!`",
-    ].sort, @differ.diff.map(&:message).sort
+    ].sort.join("\n"), @differ.diff.map(&:message).sort.join("\n")
 
     assert_equal [
       "WillBeRemoved",
@@ -220,6 +230,9 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "AnotherInterface.b",
       "WithInterfaces",
       "WithInterfaces.anotherInterfaceField",
+      "ANewInterface",
+      "AnotherWithInterfaces",
+      "AnotherWithInterfaces",
       "WithArguments.a.a",
       "WithArguments.a.b",
       "WithArguments.b.arg",
@@ -238,7 +251,7 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
       "@yolo.someArg",
       "@yolo.someArg",
       "@yolo.anotherArg",
-    ].sort, @differ.diff.map(&:path).sort
+    ].sort.join("\n"), @differ.diff.map(&:path).sort.join("\n")
   end
 
   def test_enum_value_changes

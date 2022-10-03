@@ -17,8 +17,8 @@ module GraphQL
           changes = []
 
           # Removed and Added Types
-          changes += removed_types.map { |type| Changes::TypeRemoved.new(type) }
-          changes += added_types.map { |type| Changes::TypeAdded.new(type) }
+          removed_types.each { |type| changes += changes_in_removed_type(type) }
+          added_types.each  { |type| changes += changes_in_added_type(type) }
 
           # Type Diff for common types
           each_common_type do |old_type, new_type|
@@ -32,6 +32,22 @@ module GraphQL
           changes += changes_in_directives
 
           changes
+        end
+
+        def changes_in_added_type(type)
+          changes = [Changes::TypeAdded.new(type)]
+          if type.graphql_definition.is_a?(GraphQL::ObjectType)
+            type.interfaces.each do |interface|
+              if old_types[interface.graphql_name]
+                changes << Changes::ObjectTypeInterfaceAdded.new(interface, type)
+              end
+            end
+          end
+          changes
+        end
+
+        def changes_in_removed_type(type)
+          [Changes::TypeRemoved.new(type)]
         end
 
         def changes_in_type(old_type, new_type)
