@@ -411,7 +411,6 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
   end
 
   def normalize_schema_diff(changes)
-    puts changes
     changes.sort_by { |changes| [changes[:path], changes[:message], changes[:level]] }
   end
 end

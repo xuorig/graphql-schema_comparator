@@ -211,11 +211,11 @@ module GraphQL
         end
 
         def message
-          "Schema query root has changed from `#{old_schema.query.graphql_name}` to `#{new_schema.query.graphql_name}`"
+          "Schema query root has changed from `#{old_schema.query.graphql_name}` to `#{new_schema.query&.graphql_name}`"
         end
 
         def path
-          new_schema.query.graphql_name
+          new_schema.query&.graphql_name
         end
       end
 
@@ -231,11 +231,11 @@ module GraphQL
         end
 
         def message
-          "Schema query root `#{new_schema.query&.graphql_name}` was added."
+          "Schema query root `#{new_schema.query.graphql_name}` was added."
         end
 
         def path
-          new_schema.query&.graphql_name
+          new_schema.query.graphql_name
         end
       end
 
@@ -472,7 +472,7 @@ module GraphQL
         end
 
         def message
-          "Schema subscription type has changed from `#{old_schema.subscription.graphql_name}` to `#{new_schema.subscription.graphql_name}`"
+          "Schema subscription type has changed from `#{old_schema.subscription.graphql_name}` to `#{new_schema.subscription&.graphql_name}`"
         end
 
         def path
