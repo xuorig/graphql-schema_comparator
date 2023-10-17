@@ -226,7 +226,7 @@ module GraphQL
           @old_schema = old_schema
           @new_schema = new_schema
           @criticality = Changes::Criticality.non_breaking(
-            reason: "Adding a schema subscription root is considered non-breaking."
+            reason: "Adding a schema query root is considered non-breaking."
           )
         end
 
@@ -424,26 +424,6 @@ module GraphQL
         end
       end
 
-      class SchemaSubscriptionTypeAdded < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
-
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
-          @new_schema = new_schema
-          @criticality = Changes::Criticality.non_breaking(
-            reason: "Adding a schema subscription root is considered non-breaking."
-          )
-        end
-
-        def message
-          "Schema subscription root `#{new_schema.subscription.graphql_name}` was added"
-        end
-
-        def path
-          new_schema.subscription&.graphql_name
-        end
-      end
-
       class SchemaMutationTypeChanged < AbstractChange
         attr_reader :old_schema, :new_schema, :criticality
 
@@ -474,11 +454,11 @@ module GraphQL
         end
 
         def message
-          "Schema mutation root `#{new_schema.mutation&.graphql_name}` was added"
+          "Schema mutation root `#{new_schema.mutation.graphql_name}` was added"
         end
 
         def path
-          new_schema.mutation&.graphql_name
+          new_schema.mutation.graphql_name
         end
       end
 
@@ -516,7 +496,7 @@ module GraphQL
         end
 
         def path
-          new_schema.subscription&.graphql_name
+          new_schema.subscription.graphql_name
         end
       end
 
