@@ -65,15 +65,27 @@ module GraphQL
           changes = []
 
           if old_schema.query&.graphql_name != new_schema.query&.graphql_name
-            changes << Changes::SchemaQueryTypeChanged.new(old_schema, new_schema)
+            if old_schema.query
+              changes << Changes::SchemaQueryTypeChanged.new(old_schema, new_schema)
+            else
+              changes << Changes::SchemaQueryTypeAdded.new(old_schema, new_schema)
+            end
           end
 
           if old_schema.mutation&.graphql_name != new_schema.mutation&.graphql_name
-            changes << Changes::SchemaMutationTypeChanged.new(old_schema, new_schema)
+            if old_schema.mutation
+              changes << Changes::SchemaMutationTypeChanged.new(old_schema, new_schema)
+            else
+              changes << Changes::SchemaMutationTypeAdded.new(old_schema, new_schema)
+            end
           end
 
           if old_schema.subscription&.graphql_name != new_schema.subscription&.graphql_name
-            changes << Changes::SchemaSubscriptionTypeChanged.new(old_schema, new_schema)
+            if old_schema.subscription
+              changes << Changes::SchemaSubscriptionTypeChanged.new(old_schema, new_schema)
+            else
+              changes << Changes::SchemaSubscriptionTypeAdded.new(old_schema, new_schema)
+            end
           end
 
           changes

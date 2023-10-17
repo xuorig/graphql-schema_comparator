@@ -215,7 +215,27 @@ module GraphQL
         end
 
         def path
-          # TODO
+          new_schema.query.graphql_name
+        end
+      end
+
+      class SchemaQueryTypeAdded < AbstractChange
+        attr_reader :old_schema, :new_schema, :criticality
+
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @criticality = Changes::Criticality.non_breaking(
+            reason: "Adding a schema subscription root is considered non-breaking."
+          )
+        end
+
+        def message
+          "Schema query root `#{new_schema.query&.graphql_name}` was added."
+        end
+
+        def path
+          new_schema.query&.graphql_name
         end
       end
 
@@ -404,6 +424,26 @@ module GraphQL
         end
       end
 
+      class SchemaSubscriptionTypeAdded < AbstractChange
+        attr_reader :old_schema, :new_schema, :criticality
+
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @criticality = Changes::Criticality.non_breaking(
+            reason: "Adding a schema subscription root is considered non-breaking."
+          )
+        end
+
+        def message
+          "Schema subscription root `#{new_schema.subscription.graphql_name}` was added"
+        end
+
+        def path
+          new_schema.subscription&.graphql_name
+        end
+      end
+
       class SchemaMutationTypeChanged < AbstractChange
         attr_reader :old_schema, :new_schema, :criticality
 
@@ -414,11 +454,31 @@ module GraphQL
         end
 
         def message
-          "Schema mutation root has changed from `#{old_schema.mutation}` to `#{new_schema.mutation}`"
+          "Schema mutation root has changed from `#{old_schema.mutation.graphql_name}` to `#{new_schema.mutation&.graphql_name}`"
         end
 
         def path
-          # TODO
+          old_schema.mutation.graphql_name
+        end
+      end
+
+      class SchemaMutationTypeAdded < AbstractChange
+        attr_reader :old_schema, :new_schema, :criticality
+
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @criticality = Changes::Criticality.non_breaking(
+            reason: "Adding a schema mutation root is considered non-breaking."
+          )
+        end
+
+        def message
+          "Schema mutation root `#{new_schema.mutation&.graphql_name}` was added"
+        end
+
+        def path
+          new_schema.mutation&.graphql_name
         end
       end
 
@@ -432,11 +492,31 @@ module GraphQL
         end
 
         def message
-          "Schema subscription type has changed from `#{old_schema.subscription}` to `#{new_schema.subscription}`"
+          "Schema subscription type has changed from `#{old_schema.subscription.graphql_name}` to `#{new_schema.subscription.graphql_name}`"
         end
 
         def path
-          # TODO
+          old_schema.subscription.graphql_name
+        end
+      end
+
+      class SchemaSubscriptionTypeAdded < AbstractChange
+        attr_reader :old_schema, :new_schema, :criticality
+
+        def initialize(old_schema, new_schema)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @criticality = Changes::Criticality.non_breaking(
+            reason: "Adding a schema subscription root is considered non-breaking."
+          )
+        end
+
+        def message
+          "Schema subscription root `#{new_schema.subscription.graphql_name}` was added"
+        end
+
+        def path
+          new_schema.subscription&.graphql_name
         end
       end
 
@@ -457,11 +537,11 @@ module GraphQL
         end
 
         def message
-          if old_argument.default_value.nil? || old_argument.default_value == :__no_default__
-            "Default value `#{new_argument.default_value}` was added to argument `#{new_argument.graphql_name}` on field `#{field.path}`"
-          else
+          if old_argument.default_value?
             "Default value for argument `#{new_argument.graphql_name}` on field `#{field.path}` changed"\
               " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
+          else
+            "Default value `#{new_argument.default_value}` was added to argument `#{new_argument.graphql_name}` on field `#{field.path}`"
           end
         end
 
@@ -507,8 +587,12 @@ module GraphQL
         end
 
         def message
-          "Default value for argument `#{new_argument.graphql_name}` on directive `#{directive.graphql_name}` changed"\
-            " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
+          if old_argument.default_value?
+            "Default value for argument `#{new_argument.graphql_name}` on directive `#{directive.graphql_name}` changed"\
+              " from `#{old_argument.default_value}` to `#{new_argument.default_value}`"
+          else
+            "Default value `#{new_argument.default_value}` was added to argument `#{new_argument.graphql_name}` on directive `#{directive.graphql_name}`"
+          end
         end
 
         def path
