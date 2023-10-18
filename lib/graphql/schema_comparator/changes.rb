@@ -201,27 +201,27 @@ module GraphQL
         end
       end
 
-      class SchemaRootTypeAdded < AbstractChange
-        attr_reader :new_schema, :root_type, :criticality
+      class RootOperationTypeAdded < AbstractChange
+        attr_reader :new_schema, :operation_type, :criticality
 
-        def initialize(new_schema:, root_type:)
+        def initialize(new_schema:, operation_type:)
           @new_schema = new_schema
-          @root_type = root_type
+          @operation_type = operation_type
           @criticality = Changes::Criticality.non_breaking(
-            reason: "Adding a schema #{root_type} root is considered non-breaking."
+            reason: "Adding a schema #{operation_type} root is considered non-breaking."
           )
         end
 
         def message
-          "Schema #{root_type} root `#{root_type_name}` was added"
+          "Schema #{operation_type} root `#{operation_type_name}` was added"
         end
 
         def path
-          root_type_name
+          operation_type_name
         end
 
-        def root_type_name
-          case root_type
+        def operation_type_name
+          case operation_type
             when :query
               new_schema.query.graphql_name
             when :mutation
@@ -232,26 +232,26 @@ module GraphQL
         end
       end
 
-      class SchemaRootTypeChanged < AbstractChange
-        attr_reader :old_schema, :new_schema, :root_type, :criticality
+      class RootOperationTypeChanged < AbstractChange
+        attr_reader :old_schema, :new_schema, :operation_type, :criticality
 
-        def initialize(old_schema:, new_schema:, root_type:)
+        def initialize(old_schema:, new_schema:, operation_type:)
           @old_schema = old_schema
           @new_schema = new_schema
-          @root_type = root_type
+          @operation_type = operation_type
           @criticality = Changes::Criticality.breaking
         end
 
         def message
-          "Schema #{root_type} root has changed from `#{root_type_name_for_schema(old_schema)}` to `#{root_type_name_for_schema(new_schema)}`"
+          "Schema #{operation_type} root has changed from `#{operation_type_name(old_schema)}` to `#{operation_type_name(new_schema)}`"
         end
 
         def path
-          root_type_name_for_schema(old_schema)
+          operation_type_name(old_schema)
         end
 
-        def root_type_name_for_schema(schema)
-          case root_type
+        def operation_type_name(schema)
+          case operation_type
             when :query
               schema.query.graphql_name
             when :mutation
@@ -262,25 +262,25 @@ module GraphQL
         end
       end
 
-      class SchemaRootTypeRemoved < AbstractChange
-        attr_reader :old_schema, :root_type, :criticality
+      class RootOperationTypeRemoved < AbstractChange
+        attr_reader :old_schema, :operation_type, :criticality
 
-        def initialize(old_schema:, root_type:)
+        def initialize(old_schema:, operation_type:)
           @old_schema = old_schema
-          @root_type = root_type
+          @operation_type = operation_type
           @criticality = Changes::Criticality.breaking
         end
 
         def message
-          "Schema #{root_type} root `#{root_type_name}` was removed"
+          "Schema #{operation_type} root `#{operation_type_name}` was removed"
         end
 
         def path
-          root_type_name
+          operation_type_name
         end
 
-        def root_type_name
-          case root_type
+        def operation_type_name
+          case operation_type
             when :query
               old_schema.query.graphql_name
             when :mutation

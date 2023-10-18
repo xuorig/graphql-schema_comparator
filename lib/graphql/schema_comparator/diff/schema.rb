@@ -66,31 +66,31 @@ module GraphQL
 
           if old_schema.query&.graphql_name != new_schema.query&.graphql_name
             if old_schema.query.nil?
-              changes << Changes::SchemaRootTypeAdded.new(new_schema: new_schema, root_type: :query)
+              changes << Changes::RootOperationTypeAdded.new(new_schema: new_schema, operation_type: :query)
             elsif new_schema.query.nil?
-              changes << Changes::SchemaRootTypeRemoved.new(old_schema: old_schema, root_type: :query)
+              changes << Changes::RootOperationTypeRemoved.new(old_schema: old_schema, operation_type: :query)
             else
-              changes << Changes::SchemaRootTypeChanged.new(old_schema: old_schema, new_schema: new_schema, root_type: :query)
+              changes << Changes::RootOperationTypeChanged.new(old_schema: old_schema, new_schema: new_schema, operation_type: :query)
             end
           end
 
           if old_schema.mutation&.graphql_name != new_schema.mutation&.graphql_name
             if old_schema.mutation.nil?
-              changes << Changes::SchemaRootTypeAdded.new(new_schema: new_schema, root_type: :mutation)
+              changes << Changes::RootOperationTypeAdded.new(new_schema: new_schema, operation_type: :mutation)
             elsif new_schema.mutation.nil?
-              changes << Changes::SchemaRootTypeRemoved.new(old_schema: old_schema, root_type: :mutation)
+              changes << Changes::RootOperationTypeRemoved.new(old_schema: old_schema, operation_type: :mutation)
             else
-              changes << Changes::SchemaRootTypeChanged.new(old_schema: old_schema, new_schema: new_schema, root_type: :mutation)
+              changes << Changes::RootOperationTypeChanged.new(old_schema: old_schema, new_schema: new_schema, operation_type: :mutation)
             end
           end
 
           if old_schema.subscription&.graphql_name != new_schema.subscription&.graphql_name
             if old_schema.subscription.nil?
-              changes << Changes::SchemaRootTypeAdded.new(new_schema: new_schema, root_type: :subscription)
+              changes << Changes::RootOperationTypeAdded.new(new_schema: new_schema, operation_type: :subscription)
             elsif new_schema.subscription.nil?
-              changes << Changes::SchemaRootTypeRemoved.new(old_schema: old_schema, root_type: :subscription)
+              changes << Changes::RootOperationTypeRemoved.new(old_schema: old_schema, operation_type: :subscription)
             else
-              changes << Changes::SchemaRootTypeChanged.new(old_schema: old_schema, new_schema: new_schema, root_type: :subscription)
+              changes << Changes::RootOperationTypeChanged.new(old_schema: old_schema, new_schema: new_schema, operation_type: :subscription)
             end
           end
 
