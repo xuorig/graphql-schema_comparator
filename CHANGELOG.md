@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 (October 18 2023)
+
+### Bug Fix
+
+  - More selective detection of breaking/dangerous enum value changes (#54)
+  - Improve schema root operation type changes (#55)
+
 ## 1.1.2 (September 15 2022)
 
 ### Bug Fix
