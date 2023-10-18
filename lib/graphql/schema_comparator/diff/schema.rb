@@ -65,15 +65,33 @@ module GraphQL
           changes = []
 
           if old_schema.query&.graphql_name != new_schema.query&.graphql_name
-            changes << Changes::SchemaQueryTypeChanged.new(old_schema, new_schema)
+            if old_schema.query.nil?
+              changes << Changes::RootOperationTypeAdded.new(new_schema: new_schema, operation_type: :query)
+            elsif new_schema.query.nil?
+              changes << Changes::RootOperationTypeRemoved.new(old_schema: old_schema, operation_type: :query)
+            else
+              changes << Changes::RootOperationTypeChanged.new(old_schema: old_schema, new_schema: new_schema, operation_type: :query)
+            end
           end
 
           if old_schema.mutation&.graphql_name != new_schema.mutation&.graphql_name
-            changes << Changes::SchemaMutationTypeChanged.new(old_schema, new_schema)
+            if old_schema.mutation.nil?
+              changes << Changes::RootOperationTypeAdded.new(new_schema: new_schema, operation_type: :mutation)
+            elsif new_schema.mutation.nil?
+              changes << Changes::RootOperationTypeRemoved.new(old_schema: old_schema, operation_type: :mutation)
+            else
+              changes << Changes::RootOperationTypeChanged.new(old_schema: old_schema, new_schema: new_schema, operation_type: :mutation)
+            end
           end
 
           if old_schema.subscription&.graphql_name != new_schema.subscription&.graphql_name
-            changes << Changes::SchemaSubscriptionTypeChanged.new(old_schema, new_schema)
+            if old_schema.subscription.nil?
+              changes << Changes::RootOperationTypeAdded.new(new_schema: new_schema, operation_type: :subscription)
+            elsif new_schema.subscription.nil?
+              changes << Changes::RootOperationTypeRemoved.new(old_schema: old_schema, operation_type: :subscription)
+            else
+              changes << Changes::RootOperationTypeChanged.new(old_schema: old_schema, new_schema: new_schema, operation_type: :subscription)
+            end
           end
 
           changes
