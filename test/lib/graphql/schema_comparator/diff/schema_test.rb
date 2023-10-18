@@ -256,13 +256,18 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
     ].sort, @differ.diff.map(&:path).sort
   end
 
-  def test_schema_changes
+  def test_schema_root_changes
     old_schema = <<~SCHEMA
       schema {
-        query: Query
+        query: OldQuery
+        mutation: Mutation
       }
 
-      type Query {
+      type OldQuery {
+        a: String!
+      }
+
+      type Mutation {
         a: String!
       }
     SCHEMA
@@ -270,15 +275,10 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
     new_schema = <<~SCHEMA
       schema {
         query: Query
-        mutation: Mutation
         subscription: Subscription
       }
 
       type Query {
-        a: String!
-      }
-
-      type Mutation {
         a: String!
       }
 
@@ -288,8 +288,11 @@ class GraphQL::SchemaComparator::Diff::SchemaTest < Minitest::Test
     SCHEMA
 
     expected_changes = [
-      { path: "Mutation", message: "Schema mutation root `Mutation` was added", level: 1 },
-      { path: "Mutation", message: "Type `Mutation` was added", level: 1 },
+      { path: "Mutation", message: "Schema mutation root `Mutation` was removed", level: 3 },
+      { path: "Mutation", message: "Type `Mutation` was removed", level: 3 },
+      { path: "OldQuery", message: "Schema query root has changed from `OldQuery` to `Query`", level: 3 },
+      { path: "OldQuery", message: "Type `OldQuery` was removed", level: 3 },
+      { path: "Query", message: "Type `Query` was added", level: 1 },
       { path: "Subscription", message: "Schema subscription root `Subscription` was added", level: 1 },
       { path: "Subscription", message: "Type `Subscription` was added", level: 1 },
     ]

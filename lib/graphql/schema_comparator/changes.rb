@@ -201,41 +201,93 @@ module GraphQL
         end
       end
 
-      class SchemaQueryTypeChanged < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
+      class SchemaRootTypeAdded < AbstractChange
+        attr_reader :new_schema, :root_type, :criticality
 
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
+        def initialize(new_schema:, root_type:)
           @new_schema = new_schema
-          @criticality = Changes::Criticality.breaking
-        end
-
-        def message
-          "Schema query root has changed from `#{old_schema.query.graphql_name}` to `#{new_schema.query&.graphql_name}`"
-        end
-
-        def path
-          new_schema.query&.graphql_name
-        end
-      end
-
-      class SchemaQueryTypeAdded < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
-
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
-          @new_schema = new_schema
+          @root_type = root_type
           @criticality = Changes::Criticality.non_breaking(
-            reason: "Adding a schema query root is considered non-breaking."
+            reason: "Adding a schema #{root_type} root is considered non-breaking."
           )
         end
 
         def message
-          "Schema query root `#{new_schema.query.graphql_name}` was added."
+          "Schema #{root_type} root `#{root_type_name}` was added"
         end
 
         def path
-          new_schema.query.graphql_name
+          root_type_name
+        end
+
+        def root_type_name
+          case root_type
+            when :query
+              new_schema.query.graphql_name
+            when :mutation
+              new_schema.mutation.graphql_name
+            when :subscription
+              new_schema.subscription.graphql_name
+          end
+        end
+      end
+
+      class SchemaRootTypeChanged < AbstractChange
+        attr_reader :old_schema, :new_schema, :root_type, :criticality
+
+        def initialize(old_schema:, new_schema:, root_type:)
+          @old_schema = old_schema
+          @new_schema = new_schema
+          @root_type = root_type
+          @criticality = Changes::Criticality.breaking
+        end
+
+        def message
+          "Schema #{root_type} root has changed from `#{root_type_name_for_schema(old_schema)}` to `#{root_type_name_for_schema(new_schema)}`"
+        end
+
+        def path
+          root_type_name_for_schema(old_schema)
+        end
+
+        def root_type_name_for_schema(schema)
+          case root_type
+            when :query
+              schema.query.graphql_name
+            when :mutation
+              schema.mutation.graphql_name
+            when :subscription
+              schema.subscription.graphql_name
+          end
+        end
+      end
+
+      class SchemaRootTypeRemoved < AbstractChange
+        attr_reader :old_schema, :root_type, :criticality
+
+        def initialize(old_schema:, root_type:)
+          @old_schema = old_schema
+          @root_type = root_type
+          @criticality = Changes::Criticality.breaking
+        end
+
+        def message
+          "Schema #{root_type} root `#{root_type_name}` was removed"
+        end
+
+        def path
+          root_type_name
+        end
+
+        def root_type_name
+          case root_type
+            when :query
+              old_schema.query.graphql_name
+            when :mutation
+              old_schema.mutation.graphql_name
+            when :subscription
+              old_schema.subscription.graphql_name
+          end
         end
       end
 
@@ -421,82 +473,6 @@ module GraphQL
 
         def path
           ["@#{directive.graphql_name}", old_argument.graphql_name].join('.')
-        end
-      end
-
-      class SchemaMutationTypeChanged < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
-
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
-          @new_schema = new_schema
-          @criticality = Changes::Criticality.breaking
-        end
-
-        def message
-          "Schema mutation root has changed from `#{old_schema.mutation.graphql_name}` to `#{new_schema.mutation&.graphql_name}`"
-        end
-
-        def path
-          old_schema.mutation.graphql_name
-        end
-      end
-
-      class SchemaMutationTypeAdded < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
-
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
-          @new_schema = new_schema
-          @criticality = Changes::Criticality.non_breaking(
-            reason: "Adding a schema mutation root is considered non-breaking."
-          )
-        end
-
-        def message
-          "Schema mutation root `#{new_schema.mutation.graphql_name}` was added"
-        end
-
-        def path
-          new_schema.mutation.graphql_name
-        end
-      end
-
-      class SchemaSubscriptionTypeChanged < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
-
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
-          @new_schema = new_schema
-          @criticality = Changes::Criticality.breaking
-        end
-
-        def message
-          "Schema subscription type has changed from `#{old_schema.subscription.graphql_name}` to `#{new_schema.subscription&.graphql_name}`"
-        end
-
-        def path
-          old_schema.subscription.graphql_name
-        end
-      end
-
-      class SchemaSubscriptionTypeAdded < AbstractChange
-        attr_reader :old_schema, :new_schema, :criticality
-
-        def initialize(old_schema, new_schema)
-          @old_schema = old_schema
-          @new_schema = new_schema
-          @criticality = Changes::Criticality.non_breaking(
-            reason: "Adding a schema subscription root is considered non-breaking."
-          )
-        end
-
-        def message
-          "Schema subscription root `#{new_schema.subscription.graphql_name}` was added"
-        end
-
-        def path
-          new_schema.subscription.graphql_name
         end
       end
 
