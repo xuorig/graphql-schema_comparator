@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 (October 27 2023)
+
+### Bug Fix
+
+  - Add support for path on `DirectiveArgumentAdded` (#57)
+
 ## 1.2.0 (October 18 2023)
 
 ### Bug Fix
