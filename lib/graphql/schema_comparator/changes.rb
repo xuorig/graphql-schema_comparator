@@ -1086,6 +1086,10 @@ module GraphQL
         def message
           "Argument `#{argument.graphql_name}` was added to directive `#{directive.graphql_name}`"
         end
+
+        def path
+          ["@#{directive.graphql_name}", argument.graphql_name].join('.')
+        end
       end
     end
   end
