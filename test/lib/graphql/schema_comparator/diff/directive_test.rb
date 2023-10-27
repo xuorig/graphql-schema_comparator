@@ -27,5 +27,15 @@ class GraphQL::SchemaComparator::Diff::DirectiveTest < Minitest::Test
       "Default value for argument `a` on directive `Default` changed from `No` to `Yes`",
       "Type for argument `a` on directive `Default` changed from `Int!` to `String!`"
     ], differ.diff.map(&:message)
+
+    assert_equal [
+      "@Default",
+      "@Default",
+      "@Default.c",
+      "@Default.b",
+      "@Default.a",
+      "@Default.a",
+      "@Default.a"
+    ], differ.diff.map(&:path)
   end
 end
